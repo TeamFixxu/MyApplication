@@ -14,14 +14,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/pretendard_extrabold"
-        android:text="사용자 정보 입력"
+        android:text="관리자 정보 입력"
         android:textColor="#444444"
         android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="160dp"
-        app:layout_constraintTop_margin="80dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="160dp" />
 
     <!-- 학번/교직원 번호 EditText -->
     <EditText

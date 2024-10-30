@@ -1,7 +1,9 @@
 package com.example.myapplication;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spanned;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +20,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         TextView textView = findViewById(R.id.fixxu);
-        textView.setText(Html.fromHtml(getString(R.string.fixxu), Html.FROM_HTML_MODE_LEGACY)); // HTML 형식 적용
+
+        String htmlString = getString(R.string.fixxu);
+        Spanned spanned;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            spanned = Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            spanned = Html.fromHtml(htmlString);
+        }
+
+        textView.setText(spanned); // HTML 형식 적용
     }
 }
