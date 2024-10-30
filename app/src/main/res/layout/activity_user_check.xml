@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserCheck">
+
+    <!-- TextView 위치 지정 -->
+    <TextView
+        android:id="@+id/fixxu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="170dp"
+        android:fontFamily="@font/pretendard_extrabold"
+        android:gravity="top"
+        android:text="@string/fixxu"
+        android:textAppearance="@style/fixxu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 로그인 버튼 위치 지정 -->
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="260dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="275dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:backgroundTint="#2858FF"
+        app:cornerRadius="13dp"
+        android:text="네, 사용자입니다."
+        app:layout_constraintTop_toBottomOf="@id/fixxu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 회원가입 버튼 위치 지정 -->
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="260dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:backgroundTint="#2858FF"
+        app:cornerRadius="13dp"
+        android:text="아니요, 관리자입니다."
+        app:layout_constraintTop_toBottomOf="@id/button3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/pretendard_extrabold"
+        android:text="사용자인가요?"
+        android:textSize="24sp"
+        app:layout_constraintTop_toBottomOf="@+id/fixxu"
+        tools:layout_editor_absoluteX="137dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
