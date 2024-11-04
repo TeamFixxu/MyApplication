@@ -29,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             spanned = Html.fromHtml(htmlString);
         }
-
         textView.setText(spanned); // HTML 형식 적용
     }
 }
