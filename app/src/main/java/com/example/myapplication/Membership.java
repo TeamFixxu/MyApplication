@@ -25,7 +25,7 @@ public class Membership extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
     private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
-    private EditText mEtStudentNum,mEtManagerNum, mEtPwd,mEtConfirmPwd;
+    private EditText mEtStudentNum,mEtPwd,mEtConfirmPwd;
     private Button mBtnRegister;
 
     @Override
