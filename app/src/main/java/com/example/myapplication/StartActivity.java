@@ -1,28 +1,21 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.Spanned;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-
-public class LoginActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_start);
 
         TextView textView = findViewById(R.id.fixxu);
 
@@ -36,5 +29,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         textView.setText(spanned); // HTML 형식 적용
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(StartActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        },2000);
     }
 }
