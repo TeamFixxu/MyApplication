@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class UserAccount {
+
     public UserAccount() {
 
     }
@@ -31,9 +32,17 @@ public class UserAccount {
 
     private String password;
 
+    public void setPhoneNum(String phoneNum) { this.phoneNum = phoneNum; }
+
+    private String phoneNum;
 
 
-    public void setStudentId(String strStudentNum) { this.studentNum = studentNum;}
 
-    private String studentNum;
+    public void setStudentId(String strStudentNum) {
+        this.strSudentNum = strStudentNum;
+    }
+
+    public void setManagerId(String strManagerNum) { this.strManagerNum = strManagerNum;}
+
+    private String strSudentNum, strManagerNum;
 }

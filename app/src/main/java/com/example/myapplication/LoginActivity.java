@@ -43,10 +43,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //로그인처리
                 String strNum = mEtIdNum.getText().toString();
-                String PhoneNum = mEtPwd.getText().toString();
+                String PwdNum = mEtPwd.getText().toString();
                 String  email = strNum + "@myapp.com";
 
-                mFirebaseAuth.signInWithEmailAndPassword(email, PhoneNum).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                mFirebaseAuth.signInWithEmailAndPassword(email, PwdNum).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         mBtnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, UserCheck.class);
+                Intent intent = new Intent(LoginActivity.this, UserCheckActivity.class);
                 startActivity(intent);
             }
         });
