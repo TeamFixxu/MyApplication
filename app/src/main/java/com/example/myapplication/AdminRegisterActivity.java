@@ -22,6 +22,8 @@ public class AdminRegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
     private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
+
+    private DatabaseReference mDataStore;
     private EditText mEtManagerNum, mEtPwd, mEtPwdConfirm, mEtPhoneNum;
     private Button mBtnRegister;
 
