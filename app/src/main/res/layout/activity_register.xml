@@ -44,7 +44,7 @@
             android:fontFamily="@font/pretendard_extrabold"
             android:text="로그인" />
 
-        <Button
+        <EditText
             android:id="@+id/button"
             android:layout_width="260dp"
             android:layout_height="60dp"
@@ -55,10 +55,10 @@
             android:textSize="15sp"
             android:backgroundTint="#EFEFEF"
             app:cornerRadius="0dp"
-            android:text="아이디를 입력해주세요" />
+            android:hint="학번/관리자번호를 입력해주세요" />
 
 
-        <Button
+        <EditText
             android:id="@+id/button2"
             android:layout_width="260dp"
             android:layout_height="60dp"
@@ -69,7 +69,7 @@
             android:textSize="15sp"
             android:backgroundTint="#EFEFEF"
             app:cornerRadius="0dp"
-            android:text="비밀번호를 입력해주세요" />
+            android:hint="전화번호를 입력해주세요" />
 
         <TextView
             android:id="@+id/textView2"
@@ -109,7 +109,6 @@
             android:backgroundTint="#FF69B4"
             app:cornerRadius="13dp"
             android:text="회원가입" />
-
 
 
     </RelativeLayout>
