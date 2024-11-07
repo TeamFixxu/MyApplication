@@ -69,7 +69,7 @@
             android:textSize="15sp"
             android:backgroundTint="#EFEFEF"
             app:cornerRadius="0dp"
-            android:hint="전화번호를 입력해주세요" />
+            android:hint="비밀번호를 입력해주세요" />
 
         <TextView
             android:id="@+id/textView2"
