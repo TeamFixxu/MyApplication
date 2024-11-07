@@ -40,7 +40,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
-    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.firestore)//파이어베이스 스토어 추가
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

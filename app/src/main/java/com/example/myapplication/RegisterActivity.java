@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_membership);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        //mDatabaseRef = FirebaseDatabase.getInstance().getReference();
 
         mEtStudentNum = findViewById(R.id.editTextStudentId);
         mEtPwd = findViewById(R.id.editTextPassword);
@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
                             account.setPhoneNum(strPhone); //전화번호 저장
                             account.setPassword(strPwd); //비밀번호 저장
 
-                            mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
+                            //mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
                             Toast.makeText(RegisterActivity.this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                             startActivity(intent);

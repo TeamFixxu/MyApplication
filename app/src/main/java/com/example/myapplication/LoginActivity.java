@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
-    private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
+    //private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
     private EditText mEtIdNum, mEtPwd; //매니저넘도 학번이랑 비슷한 구조로 가져가야겟다. 아이디로 받고, 넘버 확인해서 로그인시 관리자뷰, 사용자 뷰 구분 필요
     private Button mBtnRegister, mBtnLogin;
 
@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        //mDatabaseRef = FirebaseDatabase.getInstance().getReference();
 
         mEtIdNum = findViewById(R.id.button);
         mEtPwd = findViewById(R.id.button2);
