@@ -10,28 +10,32 @@
     <LinearLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@drawable/round_backgruond"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_hideable="true">
+        app:behavior_hideable="false">
 
         <!-- 드래그 핸들 -->
-        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-            android:id="@+id/drag_handle_info"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+            <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+                android:id="@+id/drag_handle_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:text="핀 변경 및 삭제"
-            android:textSize="24sp"
-            android:textColor="#444444"
-            android:lineHeight="28.64dp"
-            android:fontFamily="@font/pretendard_extrabold"/>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:text="핀 변경 및 삭제"
+                android:textSize="24sp"
+                android:textColor="#444444"
+                android:lineHeight="28.64dp"
+                android:fontFamily="@font/pretendard_extrabold"/>
+        </FrameLayout>
         <!-- 버튼 레이아웃 -->
         <LinearLayout
             android:id="@+id/linear_layout"
@@ -39,7 +43,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="31dp">
+            android:layout_marginTop="25dp">
             <!-- 버튼들 -->
 
             <!-- 버튼들 -->
@@ -104,12 +108,12 @@
         <!-- 상세 내용 -->
         <Button
             android:id="@+id/image"
+            style="@style/CustomButtonStyle"
             android:layout_width="319dp"
             android:layout_height="200dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/round_button"
-            android:backgroundTint="#2B2D30"
             android:fontFamily="@font/pretendard_extrabold"
             android:text="사진 촬영"
             android:textColor="#FAFAFA"
@@ -127,9 +131,9 @@
                 android:layout_width="319dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="25dp"
                 android:paddingLeft="25dp"
-                android:paddingTop="50dp"
+                android:paddingTop="35dp"
                 android:background="@drawable/round_button"
                 android:fontFamily="@font/pretendard_medium"
                 android:textSize="15sp"/>
@@ -139,7 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="상세 내역"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="35dp"
                 android:layout_marginLeft="20dp"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:visibility="visible"/>
@@ -153,7 +157,7 @@
             android:layout_width="339dp"
             android:layout_height="38dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:backgroundTint="#2858FF"
             android:fontFamily="@font/pretendard_extrabold"/>
     </LinearLayout>
