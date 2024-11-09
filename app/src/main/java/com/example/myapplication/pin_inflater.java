@@ -22,14 +22,8 @@ public class pin_inflater extends AppCompatActivity {
 
         View infoBottomSheet = findViewById(R.id.bottom_sheet);
         infoBottomSheetBehavior = BottomSheetBehavior.from(infoBottomSheet);
+        infoBottomSheetBehavior.setPeekHeight(200);
         infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        infoBottomSheet.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        });
 
         gestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
             @Override
@@ -43,6 +37,7 @@ public class pin_inflater extends AppCompatActivity {
             }
         });
     }
-
+// 바텀시트에 정보를 변경하면, 그거를 받아서 저장하는,
+    // 정보 저장.
 
 }

@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:background="@drawable/round_backgruond"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_hideable="false">
+        app:behavior_hideable="false"
 
         <!-- 드래그 핸들 -->
         <FrameLayout
