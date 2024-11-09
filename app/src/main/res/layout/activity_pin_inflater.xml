@@ -1,0 +1,160 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <!-- Bottom Sheet 뷰 -->
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/round_background"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="true">
+
+        <!-- 드래그 핸들 -->
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:text="핀 변경 및 삭제"
+            android:textSize="24sp"
+            android:textColor="#444444"
+            android:lineHeight="28.64dp"
+            android:fontFamily="@font/pretendard_extrabold"/>
+
+        <!-- 버튼 레이아웃 -->
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="31dp">
+            <!-- 버튼들 -->
+
+            <!-- 버튼들 -->
+            <Button
+                android:id="@+id/pin_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:textSize="20sp"
+                android:backgroundTint="#FF69B4"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:text="핀 삭제"/>
+
+            <Button
+                android:id="@+id/pin_repair"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:textSize="20sp"
+                android:backgroundTint="#569AFF"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:layout_marginLeft="10dp"
+                android:text="수리"/>
+
+            <Button
+                android:id="@+id/pin_complete"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:textSize="20sp"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#569AFF"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:text="공사 완료"/>
+
+            <Button
+                android:id="@+id/pin_solve"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:textSize="20sp"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#569AFF"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:text="해결 완료"/>
+        </LinearLayout>
+
+        <!-- 이미지 버튼 -->
+
+        <!-- 상세 내용 -->
+        <Button
+            android:id="@+id/image"
+            android:layout_width="319dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="#2B2D30"
+            android:fontFamily="@font/pretendard_extrabold"
+            android:text="사진 촬영"
+            android:textColor="#FAFAFA"
+            android:textSize="24sp" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <EditText
+                android:id="@+id/detail_edit"
+                android:hint="안녕하세요"
+                android:gravity="top|left"
+                android:layout_width="319dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="35dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="50dp"
+                android:background="@drawable/round_button"
+                android:fontFamily="@font/pretendard_medium"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/detail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상세 내역"
+                android:layout_marginTop="55dp"
+                android:layout_marginLeft="20dp"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:visibility="visible"/>
+
+        </FrameLayout>
+
+        <!-- 업로드 버튼 -->
+        <Button
+            android:id="@+id/upload"
+            android:text="업로드 하기"
+            android:layout_width="339dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="#2858FF"
+            android:fontFamily="@font/pretendard_extrabold"/>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
