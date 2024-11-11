@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin) //map
 }
 
 android {
@@ -30,6 +31,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    //viewBinding{
+    //    enable = true;
+    //}
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -40,6 +47,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation(libs.play.services.maps) //map
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

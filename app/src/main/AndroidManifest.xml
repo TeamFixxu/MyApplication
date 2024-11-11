@@ -13,6 +13,18 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".AdminList"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA7tVk0VPGlB8gll7bPRlj8-zTz7WR2MnE" />
+
+        <activity
+            android:name=".MapsActivity_user"
+            android:exported="false"
+            android:label="@string/title_activity_maps_user" />
+        <activity
             android:name=".AdminMembership"
             android:exported="false" />
         <activity

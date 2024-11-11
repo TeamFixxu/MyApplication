@@ -6,4 +6,10 @@
         <item name="android:textSize">56sp</item>
         <item name="android:textColor">#2858FF</item>
     </style>
+
+    <!-- bottomsheet 버튼 스타일 -->
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="backgroundTint">#A0A0A0</item>
+    </style>
+
 </resources>
