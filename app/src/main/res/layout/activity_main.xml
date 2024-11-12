@@ -1,46 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StartActivity">
+    tools:context=".MapsActivity_user">
 
-    <!-- RelativeLayout을 match_parent로 변경 -->
-    <RelativeLayout
-        android:id="@+id/some_id"
+    <!-- 맵 -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <ImageButton
+            android:id="@+id/setup_Button"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="5dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/set_wheel_button" />
+
+        <ImageButton
+            android:id="@+id/help_list_Button"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_gravity="top|end"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/help_list_button" />
+
+    </LinearLayout>
+
+    <!-- Bottom Sheet -->
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:clipToOutline="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        android:orientation="vertical"
+        android:background="@drawable/round_background"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="false">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="355dp"
-            android:layout_height="335dp"
-            android:layout_marginTop="105dp"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/logo" />
+        <!-- 드래그 핸들 -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+                android:id="@+id/drag_handle_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/fixxu"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:text="핀 변경 및 삭제"
+                android:textSize="24sp"
+                android:textColor="#444444"
+                android:lineHeight="28.64dp"
+                android:fontFamily="@font/pretendard_extrabold"/>
+        </FrameLayout>
+        <!-- 버튼 레이아웃 -->
+        <LinearLayout
+            android:id="@+id/linear_layout"
             android:layout_width="wrap_content"
-            android:layout_height="67dp"
-            android:layout_marginTop="360dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp">
+            <!-- 버튼들 -->
+
+            <!-- 버튼들 -->
+            <Button
+                android:id="@+id/pin_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:textSize="20sp"
+                android:backgroundTint="#FF69B4"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:background="@drawable/round_button"
+                android:text="핀 삭제"/>
+
+            <Button
+                android:id="@+id/pin_repair"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:textSize="20sp"
+                android:backgroundTint="#569AFF"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/round_button"
+                android:text="수리"/>
+
+            <Button
+                android:id="@+id/pin_complete"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:textSize="20sp"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#569AFF"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:background="@drawable/round_button"
+                android:text="공사 완료"/>
+
+            <Button
+                android:id="@+id/pin_solve"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:textSize="20sp"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#569AFF"
+                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp"
+                android:background="@drawable/round_button"
+                android:text="해결 완료"/>
+        </LinearLayout>
+
+        <!-- 이미지 버튼 -->
+
+        <!-- 상세 내용 -->
+        <Button
+            android:id="@+id/image"
+            style="@style/CustomButtonStyle"
+            android:layout_width="319dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/round_button"
             android:fontFamily="@font/pretendard_extrabold"
-            android:gravity="top"
-            android:layout_centerHorizontal="true"
-            android:text="@string/fixxu"
-            android:textAppearance="@style/fixxu" />
+            android:text="사진 촬영"
+            android:textColor="#FAFAFA"
+            android:textSize="24sp" />
 
-    </RelativeLayout>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/detail_edit"
+                android:hint="안녕하세요"
+                android:gravity="top|left"
+                android:layout_width="319dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="35dp"
+                android:background="@drawable/round_button"
+                android:fontFamily="@font/pretendard_medium"
+                android:textSize="15sp"/>
 
+            <TextView
+                android:id="@+id/detail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상세 내역"
+                android:layout_marginTop="35dp"
+                android:layout_marginLeft="20dp"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:visibility="visible"/>
+
+        </FrameLayout>
+
+        <!-- 업로드 버튼 -->
+        <Button
+            android:id="@+id/upload"
+            android:text="업로드 하기"
+            android:layout_width="339dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#2858FF"
+            android:background="@drawable/round_button"
+            android:fontFamily="@font/pretendard_extrabold"/>
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

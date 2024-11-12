@@ -2,5 +2,6 @@
     <string name="app_name">My Application</string>
     <!-- res/values/strings.xml -->
     <string name="fixxu">FIX<font color="#232527">XU</font></string>
+    <string name="title_activity_maps_user">MapsActivity_user</string>
 
 </resources>
