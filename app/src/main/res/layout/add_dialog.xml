@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adddialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:backgroundTint="#FAFAFA"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/singo_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        android:text="신고핀"
+        android:fontFamily="@font/pretendard_extrabold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/singo_picture"
+        android:layout_width="320dp"
+        android:layout_height="280dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <View
+        android:id="@+id/singo_text"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"/>
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_button"
+        android:backgroundTint="#FF69B4"
+        android:text="핀에 의견 추가 +1"
+        android:fontFamily="@font/pretendard_extrabold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#FAFAFA"
+        android:textStyle="bold" />
+    <Button
+        android:id="@+id/dialog_close_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="#A0A0A0"
+        android:text="닫기"
+        android:background="@drawable/round_button"
+        android:fontFamily="@font/pretendard_extrabold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#FAFAFA"
+        android:textStyle="bold" />
+
+
+</LinearLayout>

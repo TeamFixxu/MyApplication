@@ -8,14 +8,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.myapplication.databinding.ActivitySettingBinding;
+import com.example.myapplication.databinding.ActivityAdminListBinding;
 
-public class Setting extends AppCompatActivity {
+public class AdminList extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivitySettingBinding binding = ActivitySettingBinding.inflate(getLayoutInflater());
+        ActivityAdminListBinding binding = ActivityAdminListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
     }
 }
