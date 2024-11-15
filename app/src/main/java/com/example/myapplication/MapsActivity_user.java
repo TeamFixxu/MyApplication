@@ -63,22 +63,23 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         mBtnSetting = findViewById(R.id.setup_Button);
         mBtnAdminList = findViewById(R.id.help_list_Button);
 
-        mBtnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MapsActivity_user.this, Setting.class);
-                startActivity(intent);
-            }
-        });
+//        mBtnSetting.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MapsActivity_user.this, Setting.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        mBtnAdminList.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MapsActivity_user.this, AdminList.class);
+//                startActivity(intent);
+//            }
+//        });
 
-        mBtnAdminList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MapsActivity_user.this, AdminList.class);
-                startActivity(intent);
-            }
-        });
-
+        //바텀시트 관련 코드
         gestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
@@ -109,7 +110,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 18));
 
         //세팅 버튼 클릭 시 Setting 액티비티 실행
-        binding.setupButton.setOnClickListener(new View.OnClickListener() {
+        mBtnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity_user.this, Setting.class);
@@ -118,7 +119,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         });
 
         //클릭 시 adminList 관리자리스트 액티비티 실행
-        binding.setupButton.setOnClickListener(new View.OnClickListener() {
+        mBtnAdminList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity_user.this, AdminList.class);

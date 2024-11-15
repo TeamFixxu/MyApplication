@@ -16,6 +16,7 @@ public class Setting extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivitySettingBinding binding = ActivitySettingBinding.inflate(getLayoutInflater());
+        setContentView(R.layout.activity_setting);
         setContentView(binding.getRoot());
     }
 }
