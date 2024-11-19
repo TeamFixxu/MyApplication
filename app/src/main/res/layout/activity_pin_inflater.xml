@@ -45,8 +45,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp">
             <!-- 버튼들 -->
-
-            <!-- 버튼들 -->
             <Button
                 android:id="@+id/pin_delete"
                 android:layout_width="wrap_content"
