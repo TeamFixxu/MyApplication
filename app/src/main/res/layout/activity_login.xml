@@ -21,24 +21,94 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="355dp"
-            android:layout_height="335dp"
-            android:layout_marginTop="105dp"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/logo" />
 
         <TextView
             android:id="@+id/fixxu"
             android:layout_width="wrap_content"
-            android:layout_height="67dp"
-            android:layout_marginTop="360dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="170dp"
             android:fontFamily="@font/pretendard_extrabold"
             android:gravity="top"
             android:layout_centerHorizontal="true"
             android:text="@string/fixxu"
             android:textAppearance="@style/fixxu" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="280dp"
+            android:textColor="#444444"
+            android:textSize="24sp"
+            android:fontFamily="@font/pretendard_extrabold"
+            android:text="로그인" />
+
+        <EditText
+            android:id="@+id/editTextIdNum"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="340dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#A0A0A0"
+            android:textSize="15sp"
+            android:backgroundTint="#EFEFEF"
+            app:cornerRadius="0dp"
+            android:hint="학번/관리자번호를 입력해주세요" />
+
+
+        <EditText
+            android:id="@+id/editTextPwNum"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="420dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#A0A0A0"
+            android:textSize="15sp"
+            android:backgroundTint="#EFEFEF"
+            app:cornerRadius="0dp"
+            android:hint="비밀번호를 입력해주세요" />
+
+        <TextView
+            android:id="@+id/textFindPw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextPwNum"
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="270dp"
+            android:textSize="11sp"
+            app:layout_constraintTop_toBottomOf="@id/editTextPwNum"
+            app:layout_constraintEnd_toEndOf="@id/editTextPwNum"
+            android:layout_marginEnd="0dp"
+            android:text="비밀번호 찾기" />
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="525dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:backgroundTint="#2858FF"
+            app:cornerRadius="13dp"
+            android:text="로그인" />
+
+        <Button
+            android:id="@+id/buttonRegister"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="585dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:backgroundTint="#FF69B4"
+            app:cornerRadius="13dp"
+            android:text="회원가입" />
 
     </RelativeLayout>
 

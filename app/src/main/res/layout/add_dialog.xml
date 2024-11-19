@@ -54,7 +54,8 @@
         android:fontFamily="@font/pretendard_extrabold"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#FAFAFA"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:enabled="false"/>
     <Button
         android:id="@+id/dialog_close_button"
         android:layout_width="match_parent"

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".StartActivity">
 
     <!-- RelativeLayout을 match_parent로 변경 -->
     <RelativeLayout
@@ -39,11 +39,8 @@
             android:layout_centerHorizontal="true"
             android:text="@string/fixxu"
             android:textAppearance="@style/fixxu" />
-            <Button
-        android:id="@+id/ToMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="맵 액티비티로! 테스트를 위해 만든거"/>
+
+
     </RelativeLayout>
 
 
