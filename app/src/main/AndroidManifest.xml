@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature
         android:name="android.hardware.camera"
@@ -38,7 +37,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AdminMembership"
+            android:name=".CameraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminList"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA7tVk0VPGlB8gll7bPRlj8-zTz7WR2MnE" />
+
+        <activity
+            android:name=".MapsActivity_user"
+            android:exported="false"
+            android:label="@string/title_activity_maps_user" />
+        <activity
+            android:name=".AdminRegisterActivity"
             android:exported="false" />
         <activity
             android:name=".Setting"
@@ -47,7 +61,7 @@
             android:name=".Membership"
             android:exported="false" />
         <activity
-            android:name=".UserCheck"
+            android:name=".UserCheckActivity"
             android:exported="false" />
         <activity
             android:name=".UserAccount"
@@ -59,7 +73,7 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
