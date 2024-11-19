@@ -29,7 +29,7 @@ AdminRegisterActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
     //private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
     FirebaseFirestore mFirebaseStore;
-    private EditText mEtStudentNum,mEtPwd,mEtConfirmPwd, mEtPhoneNum;
+    private EditText mEtManagerNum,mEtPwd,mEtConfirmPwd, mEtPhoneNum;
     private Button mBtnRegister;
 
     @Override
@@ -41,7 +41,7 @@ AdminRegisterActivity extends AppCompatActivity {
         //mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         mFirebaseStore = FirebaseFirestore.getInstance();
 
-        mEtStudentNum = findViewById(R.id.editTextStudentId);
+        mEtManagerNum = findViewById(R.id.editTextStudentId);
         mEtPwd = findViewById(R.id.editTextPassword);
         mBtnRegister = findViewById(R.id.btnSignUp);
         mEtConfirmPwd = findViewById(R.id.editTextPasswordConfirm);
@@ -52,7 +52,7 @@ AdminRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("mBtnRegister", "onClick");
-                String strStudentNum = mEtStudentNum.getText().toString();
+                String strManagertNum = mEtManagerNum.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
                 String strPhone = mEtPhoneNum.getText().toString();
                 String strConfirmPwd = mEtConfirmPwd.getText().toString();
@@ -66,7 +66,7 @@ AdminRegisterActivity extends AppCompatActivity {
                 }
 
                 // 학번을 이메일 형식으로 변환하여 Firebase Auth에 전달
-                String email = strStudentNum + "@myapp.com";
+                String email = strManagertNum + "@myapp.com";
 
                 mFirebaseAuth.createUserWithEmailAndPassword(email, strPwd).addOnCompleteListener(AdminRegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -85,12 +85,13 @@ AdminRegisterActivity extends AppCompatActivity {
 //                            account.setStudentId(strStudentNum); // 학번 저장
 //                            account.setPhoneNum(strPhone); //전화번호 저장
 //                            account.setPassword(strPwd); //비밀번호 저장
-                                Map<String, Object> student = new HashMap<>();
-                                student.put("User Num", strStudentNum);
-                                student.put("Phone Num", strPhone);
+                                Map<String, Object> manager = new HashMap<>();
+                                manager.put("Manager Num", strManagertNum);
+                                manager.put("Phone Num", strPhone);
+                                manager.put("role", "manager");
                                 Log.d("mBtnRegister", "맵");
 
-                                mFirebaseStore.collection("student").document(userId).set(student).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                mFirebaseStore.collection("manager").document(userId).set(manager).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Log.d("mBtnRegister", "스토어 저장");

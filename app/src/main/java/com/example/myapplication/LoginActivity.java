@@ -14,10 +14,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
+    private FirebaseFirestore mFirestore;
     //private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
     private EditText mEtIdNum, mEtPwd; //매니저넘도 학번이랑 비슷한 구조로 가져가야겟다. 아이디로 받고, 넘버 확인해서 로그인시 관리자뷰, 사용자 뷰 구분 필요
     private Button mBtnRegister, mBtnLogin;
@@ -28,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
+
         //mDatabaseRef = FirebaseDatabase.getInstance().getReference();
 
         mEtIdNum = findViewById(R.id.button);
@@ -48,12 +54,43 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Intent intent = new Intent(LoginActivity.this, MapsActivity_user.class);
-                            startActivity(intent);
-                            finish();
-                            Toast.makeText(LoginActivity.this, "로그인에 성공했습니다.",Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.",Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            if(user != null){
+                                String uid = user.getUid();
+
+                                mFirestore.collection("users").document(uid).get()
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                                                    // 학생으로 로그인 성공
+                                                    Intent intent = new Intent(LoginActivity.this, MapsActivity_user.class);
+                                                    startActivity(intent);
+                                                    Toast.makeText(LoginActivity.this, "학생 로그인 성공", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    // 관리자 컬렉션 확인
+                                                    mFirestore.collection("manager").document(uid).get()
+                                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                                                                        // 관리자 로그인 성공
+                                                                        Intent intent = new Intent(LoginActivity.this, MapsActivity_admin.class);
+                                                                        startActivity(intent);
+                                                                        Toast.makeText(LoginActivity.this, "관리자 로그인 성공", Toast.LENGTH_SHORT).show();
+                                                                    } else {
+                                                                        // 학생, 관리자 모두 없는 경우
+                                                                        Toast.makeText(LoginActivity.this, "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                        });
+                            }
+                        } else {
+                            // 로그인 실패
+                            Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -66,8 +103,5 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
     }
 }

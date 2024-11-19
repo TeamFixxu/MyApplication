@@ -85,8 +85,9 @@ public class RegisterActivity extends AppCompatActivity {
 //                            account.setPhoneNum(strPhone); //전화번호 저장
 //                            account.setPassword(strPwd); //비밀번호 저장
                                 Map<String, Object> student = new HashMap<>();
-                                student.put("User Num", strStudentNum);
-                                student.put("Phone Num", strPhone);
+                                student.put("userNum", strStudentNum);
+                                student.put("phoneNum", strPhone);
+                                student.put("role", "student");
                                 Log.d("mBtnRegister", "맵");
 
                                 mFirebaseStore.collection("student").document(userId).set(student).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -98,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.d("mBtnRegister", "스토어 저장 실패");
+                                        Log.e("mBtnRegister", "스토어 저장 실패", e);
                                         Toast.makeText(RegisterActivity.this, "회원가입 완료, 사용자정보 저장실패", Toast.LENGTH_SHORT).show();
                                     }
                                 });
