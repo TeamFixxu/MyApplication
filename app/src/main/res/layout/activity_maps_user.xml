@@ -90,10 +90,9 @@
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
                 android:textSize="20sp"
-                android:backgroundTint="#FF69B4"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
-                android:background="@drawable/round_button"
                 android:text="핀 삭제"/>
 
             <Button
@@ -101,14 +100,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
                 android:textSize="20sp"
-                android:backgroundTint="#569AFF"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
                 android:layout_marginLeft="10dp"
-                android:background="@drawable/round_button"
                 android:text="수리"/>
 
             <Button
@@ -117,13 +115,12 @@
                 android:layout_height="38dp"
                 android:textSize="20sp"
                 android:layout_marginLeft="10dp"
-                android:backgroundTint="#569AFF"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
-                android:background="@drawable/round_button"
                 android:text="공사 완료"/>
 
             <Button
@@ -132,13 +129,12 @@
                 android:layout_height="38dp"
                 android:textSize="20sp"
                 android:layout_marginLeft="10dp"
-                android:backgroundTint="#569AFF"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
-                android:background="@drawable/round_button"
                 android:text="해결 완료"/>
         </LinearLayout>
 
@@ -211,7 +207,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:backgroundTint="#2858FF"
-            android:background="@drawable/round_button"
             android:fontFamily="@font/pretendard_extrabold"/>
     </LinearLayout>
 

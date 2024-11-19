@@ -40,9 +40,6 @@
             android:name=".Setting"
             android:exported="false" />
         <activity
-            android:name=".Membership"
-            android:exported="false" />
-        <activity
             android:name=".UserCheckActivity"
             android:exported="false" />
         <activity
