@@ -81,6 +81,11 @@ public class MapsActivity_user extends AppCompatActivity implements OnMapReadyCa
         binding.pinSolve.setOnClickListener(this);
         binding.pinComplete.setOnClickListener(this);
 
+        binding.setupButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MapsActivity_user.this, Setting.class);
+            startActivity(intent);
+        });
+
         // 권한 요청
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
 

@@ -44,17 +44,22 @@ public class RegisterActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseStore = FirebaseFirestore.getInstance();
 
+        mEtStudentNum = findViewById(R.id.editTextStudentId);
+        mEtPwd = findViewById(R.id.editTextPassword);
+        mBtnRegister = findViewById(R.id.btnSignUp);
         mEtConfirmPwd = findViewById(R.id.editTextPasswordConfirm);
+        mEtPhoneNum = findViewById(R.id.editTextPhone);
+
 
 
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("mBtnRegister", "onClick");
-                String strStudentNum = binding.editTextStudentId.getText().toString();
-                String strPwd = binding.editTextPassword.getText().toString();
-                String strPhone = binding.editTextPhone.getText().toString();
-                String strConfirmPwd = binding.editTextPasswordConfirm.getText().toString();
+                String strStudentNum = mEtStudentNum.getText().toString();
+                String strPwd = mEtPwd.getText().toString();
+                String strPhone = mEtPhoneNum.getText().toString();
+                String strConfirmPwd = mEtConfirmPwd.getText().toString();
 
                 // 비밀번호와 확인 비밀번호가 일치하는지 확인
                 if (!strPwd.equals(strConfirmPwd)) {
@@ -73,37 +78,32 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("mBtnRegister", "이메일 패스워드 함수 실행");
                         if(task.isSuccessful() && mFirebaseAuth.getCurrentUser() != null){
-                            FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
-                            if (currentUser == null) {
-                                Log.e("FirestoreAuth", "사용자가 인증되지 않았습니다.");
-                                return;
-                            } else {
-                                Log.d("FirestoreAuth", "사용자 인증 성공: " + currentUser.getUid());
-                            }
+                            FirebaseUser firebaseUser = task.getResult().getUser();
 
-                            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                            Log.d("mBtnRegister", "만약 회원가입 성공이라면...");
-
-                            if(firebaseUser != null) {
+                            if (firebaseUser != null) {
                                 String userId = firebaseUser.getUid();
                                 Log.d("mBtnRegister", "사용자 인증 성공 : " + userId);
 
+
                                 Map<String, Object> student = new HashMap<>();
-                                student.put("userNum", strStudentNum);
                                 student.put("phoneNum", strPhone);
+                                student.put("userNum", strStudentNum);
                                 student.put("role", "student");
+                                student.put("report", 0);
+                                student.put("point", 0);
                                 Log.d("mBtnRegister", "맵");
 
-                                mFirebaseStore.collection("student")
-                                        .add(student)
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                mFirebaseStore.collection("users")
+                                        .document(userId)
+                                        .set(student)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>()  {
+
                                             @Override
-                                            public void onSuccess(DocumentReference documentReference) {
+                                            public void onSuccess(Void unused) {
                                                 Log.d("mBtnRegister", "스토어 저장");
-                                                Toast.makeText(RegisterActivity.this, "회원가입 완료, 사용자정보 저장 성공", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(RegisterActivity.this, "회원가입 완료, 사용자정보 저장완료", Toast.LENGTH_SHORT).show();
                                             }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
+                                        }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 Log.e("mBtnRegister", "스토어 저장 실패", e);
@@ -113,7 +113,6 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         });
                             }
-
                             Intent intent = new Intent(RegisterActivity.this, MapsActivity_user.class);
                             startActivity(intent);
                             finish();

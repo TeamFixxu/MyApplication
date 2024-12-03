@@ -1,22 +1,32 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-
-import android.app.Dialog;
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.myapplication.databinding.ActivityMapsAdminBinding;
+import com.example.myapplication.databinding.ActivityMapsUserBinding;
+import com.example.myapplication.databinding.ActivityMapsUserBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,164 +35,134 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.myapplication.databinding.ActivityMapsUserBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-public class MapsActivity_admin extends FragmentActivity implements OnMapReadyCallback {
+import java.io.IOException;
+
+public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private GoogleMap mMap;
     private BottomSheetBehavior<View> infoBottomSheetBehavior;
     private GestureDetector gestureDetector;
-
-    private ActivityMapsUserBinding binding;
-    Dialog AddDialog; //의견추가하는 다이얼로그라서 add라고 이름지음
+    private String imagePath;
     private Marker userMarker;
-
-    public int addPersonCount= 0;
-    public int pinType = 0;
+    private int pinType = 0;
     private int pin_height = 110;
     private int pin_width = 90;
-    private ImageButton mBtnSetting,mBtnReportList;
+    private int pin_type;
+
+    private @NonNull ActivityMapsAdminBinding binding;
+
+    private static final int PIN_Delete = 1;
+    private static final int PIN_REPAIR = 2;
+    private static final int PIN_COMPLETE = 3;
+    private static final int PIN_SOLVE = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMapsUserBinding.inflate(getLayoutInflater());
+        binding = ActivityMapsAdminBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Google Maps 초기화
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
-
-        View infoBottomSheet = findViewById(R.id.bottom_sheet);
-        infoBottomSheetBehavior = BottomSheetBehavior.from(infoBottomSheet);
-        infoBottomSheetBehavior.setPeekHeight(200);
-        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        mBtnSetting = findViewById(R.id.setup_Button);
-        mBtnReportList = findViewById(R.id.report_list_Button);
-
-//        mBtnSetting.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MapsActivity_user.this, Setting.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        mBtnAdminList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MapsActivity_user.this, AdminList.class);
-//                startActivity(intent);
-//            }
-//        });
-
-        //바텀시트 관련 코드
-        gestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
-            @Override
-            public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
-                if(e2.getY()<e1.getY()) {
-                    if (infoBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
-                        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    }
-                }
-                return super.onFling(e1, e2, velocityX, velocityY);
-            }
-        });
-
-        AddDialog = new Dialog(MapsActivity_admin.this); //다이얼로그 관련 코드
-        AddDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        AddDialog.setContentView(R.layout.add_dialog);
-
-        if (mapFragment != null){
+        if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        // 바텀시트 초기화
+        infoBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
+        infoBottomSheetBehavior.setPeekHeight(200);
+
+        // 클릭 리스너 설정
+        binding.pinRepair.setOnClickListener(this);
+        binding.pinDelete.setOnClickListener(this);
+        binding.pinSolve.setOnClickListener(this);
+        binding.pinComplete.setOnClickListener(this);
+
+        // 권한 요청
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+
+        // 카메라 및 이미지 업로드
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            imagePath = result.getData().getStringExtra("image_path");
+                            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                            binding.image.setImageBitmap(bitmap);
+                            binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            binding.imageButton.setVisibility(View.INVISIBLE);
+                            binding.image.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
+        binding.imageButton.setOnClickListener(v -> launcher.launch(new Intent(this, CameraActivity.class)));
+
+        binding.upload.setOnClickListener(view -> {
+            Log.d("PBY", "detail : " + binding.detailEdit.getText().toString());
+            Log.d("PBY", "image_path : " + imagePath);
+            Log.d("PBY", "pin type : " + pin_type);
+            infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            clear();
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        clear_pin();
+        if (v == binding.pinDelete) {
+            binding.pinDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.button_pressed_color_pink));
+            pin_type = PIN_Delete;
+        } else if (v == binding.pinComplete) {
+            binding.pinComplete.setBackgroundColor(ContextCompat.getColor(this, R.color.button_pressed_color_blue));
+            pin_type = PIN_COMPLETE;
+        } else if (v == binding.pinSolve) {
+            binding.pinSolve.setBackgroundColor(ContextCompat.getColor(this, R.color.button_pressed_color_blue));
+            pin_type = PIN_SOLVE;
+        } else if (v == binding.pinRepair) {
+            binding.pinRepair.setBackgroundColor(ContextCompat.getColor(this, R.color.button_pressed_color_blue));
+            pin_type = PIN_REPAIR;
+        }
+    }
+
+    private void clear() {
+        clear_pin();
+        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        binding.detailEdit.setText("");
+        binding.detailEdit.clearFocus();
+        binding.imageButton.setVisibility(View.VISIBLE);
+        binding.image.setVisibility(View.INVISIBLE);
+    }
+
+    private void clear_pin() {
+        pin_type = 0;
+        binding.pinDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.button_default_color));
+        binding.pinComplete.setBackgroundColor(ContextCompat.getColor(this, R.color.button_default_color));
+        binding.pinSolve.setBackgroundColor(ContextCompat.getColor(this, R.color.button_default_color));
+        binding.pinRepair.setBackgroundColor(ContextCompat.getColor(this, R.color.button_default_color));
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        //숭실대 위치를 기준으로 첫 세팅
-        LatLng soongsil_univ = new LatLng(37.4963, 126.9572); //숭실대 위치
+        LatLng soongsil_univ = new LatLng(37.4963, 126.9572);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 18));
 
-        //세팅 버튼 클릭 시 Setting 액티비티 실행
-        mBtnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity_admin.this, Setting.class);
-                startActivity(intent);
-            }
-        });
-
-        //클릭 시 adminList 관리자리스트 액티비티 실행
-        //TODO : 리포트 이미지 버튼 업데이트
-        mBtnReportList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity_admin.this, AdminList.class);
-                startActivity(intent);
-            }
-        });
-
         mMap.setOnMapLongClickListener(latLng -> {
-            //바텀시트에 체크한 마커 종류를 구분할 부분이 필요.
-            if (pinType == 0){
-                userMarker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng).draggable(true)
-                        .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.pink_pin, pin_width, pin_height))));
-            } else if (pinType == 1) {
-                userMarker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng).draggable(true)
-                        .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.yellow_pin, pin_width, pin_height))));
-            }
-            else if (pinType == 2) {
-                userMarker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng).draggable(true)
-                        .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.blue_pin, pin_width, pin_height))));
-            }
+            userMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.pink_pin, pin_width, pin_height))));
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        });
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker userMarker) {
-                CameraUpdate center = CameraUpdateFactory.newLatLng(userMarker.getPosition());
-                mMap.animateCamera(center);
-
-                showMarkerDialog(userMarker);
-
-                return true;
-            }
-        });
-    }
-
-    public void showMarkerDialog(Marker marker){
-        AddDialog.show();
-
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder. */
-
-        Button addButton = AddDialog.findViewById(R.id.add_button);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MapsActivity_admin.this, "의견을 추가했습니다.",Toast.LENGTH_SHORT).show();
-                addPersonCount++;
-            }
         });
     }
 
     private Bitmap getResizedBitmap(int drawableRes, int width, int height) {
-        // Drawable 리소스를 Bitmap으로
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
-        // Bitmap 크기 조절
         return Bitmap.createScaledBitmap(originalBitmap, width, height, false);
     }
-
-
-
 }

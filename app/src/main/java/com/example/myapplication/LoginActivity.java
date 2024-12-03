@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,30 +64,25 @@ public class LoginActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                 if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
-                                                    // 학생으로 로그인 성공
-                                                    Intent intent = new Intent(LoginActivity.this, MapsActivity_user.class);
-                                                    startActivity(intent);
-                                                    Toast.makeText(LoginActivity.this, "학생 로그인 성공", Toast.LENGTH_SHORT).show();
+                                                    String role = task.getResult().getString("role");
+                                                    Log.d("Login", "User data: " + task.getResult().toString());
+                                                    if ("student".equals(role)) {
+                                                        Intent intent = new Intent(LoginActivity.this, MapsActivity_user.class);
+                                                        startActivity(intent);
+                                                        Toast.makeText(LoginActivity.this, "학생 로그인 성공", Toast.LENGTH_SHORT).show();
+                                                    } else if ("manager".equals(role)) {
+                                                        Intent intent = new Intent(LoginActivity.this, MapsActivity_admin.class);
+                                                        startActivity(intent);
+                                                        Toast.makeText(LoginActivity.this, "관리자 로그인 성공", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(LoginActivity.this, "사용자 역할을 확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 } else {
-                                                    // 관리자 컬렉션 확인
-                                                    mFirestore.collection("manager").document(uid).get()
-                                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
-                                                                        // 관리자 로그인 성공
-                                                                        Intent intent = new Intent(LoginActivity.this, MapsActivity_user.class);
-                                                                        startActivity(intent);
-                                                                        Toast.makeText(LoginActivity.this, "관리자 로그인 성공", Toast.LENGTH_SHORT).show();
-                                                                    } else {
-                                                                        // 학생, 관리자 모두 없는 경우
-                                                                        Toast.makeText(LoginActivity.this, "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
-                                                                    }
-                                                                }
-                                                            });
+                                                    Toast.makeText(LoginActivity.this, "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
+
                             }
                         } else {
                             // 로그인 실패

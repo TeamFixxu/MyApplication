@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivity_admin">
+    tools:context=".MapsActivity_user">
 
     <!-- 맵 -->
     <fragment
@@ -29,9 +29,8 @@
             android:scaleType="fitCenter"
             android:src="@drawable/set_wheel_button" />
 
-        <!--리포트 리스트 버튼 업뎃 필요....목록-->
         <ImageButton
-            android:id="@+id/report_list_Button"
+            android:id="@+id/help_list_Button"
             android:layout_width="50dp"
             android:layout_height="45dp"
             android:layout_gravity="top|end"
@@ -42,7 +41,7 @@
 
     </LinearLayout>
 
-    <!-- Bottom Sheet -->
+    <!-- Bottom Sheet 뷰 -->
     <LinearLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
@@ -66,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="30dp"
-                android:text="관리자 핀 변경 및 삭제"
+                android:text="핀 변경 및 삭제"
                 android:textSize="24sp"
                 android:textColor="#444444"
                 android:lineHeight="28.64dp"
@@ -91,10 +90,9 @@
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
                 android:textSize="20sp"
-                android:backgroundTint="#FF69B4"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
-                android:background="@drawable/round_button"
                 android:text="핀 삭제"/>
 
             <Button
@@ -102,14 +100,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
                 android:textSize="20sp"
-                android:backgroundTint="#569AFF"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
                 android:layout_marginLeft="10dp"
-                android:background="@drawable/round_button"
                 android:text="수리"/>
 
             <Button
@@ -118,13 +115,12 @@
                 android:layout_height="38dp"
                 android:textSize="20sp"
                 android:layout_marginLeft="10dp"
-                android:backgroundTint="#569AFF"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
-                android:background="@drawable/round_button"
                 android:text="공사 완료"/>
 
             <Button
@@ -133,31 +129,42 @@
                 android:layout_height="38dp"
                 android:textSize="20sp"
                 android:layout_marginLeft="10dp"
-                android:backgroundTint="#569AFF"
+                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
-                android:background="@drawable/round_button"
                 android:text="해결 완료"/>
         </LinearLayout>
 
         <!-- 이미지 버튼 -->
 
         <!-- 상세 내용 -->
-        <Button
-            android:id="@+id/image"
-            style="@style/CustomButtonStyle"
-            android:layout_width="319dp"
-            android:layout_height="200dp"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:background="@drawable/round_button"
-            android:fontFamily="@font/pretendard_extrabold"
-            android:text="사진 촬영"
-            android:textColor="#FAFAFA"
-            android:textSize="24sp" />
+            >
+            <Button
+                android:id="@+id/image_button"
+                style="@style/CustomButtonStyle"
+                android:layout_width="319dp"
+                android:layout_height="200dp"
+                android:background="@drawable/round_button"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:text="사진 촬영"
+                android:textColor="#FAFAFA"
+                android:textSize="24sp" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/image"
+                android:layout_width="319dp"
+                android:layout_height="200dp"
+                app:shapeAppearanceOverlay="@style/CustomImageButtonStyle"
+                />
+
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -166,14 +173,14 @@
 
             <EditText
                 android:id="@+id/detail_edit"
-                android:hint="안녕하세요"
+                android:hint="클릭하여 상세 내역을 입력하세요"
                 android:gravity="top|left"
                 android:layout_width="319dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25dp"
-                android:paddingLeft="25dp"
-                android:paddingTop="35dp"
+                android:paddingHorizontal="25dp"
+                android:paddingVertical="35dp"
                 android:background="@drawable/round_button"
                 android:fontFamily="@font/pretendard_medium"
                 android:textSize="15sp"/>
@@ -199,9 +206,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:backgroundTint="#2858FF"
-            android:background="@drawable/round_button"
             android:fontFamily="@font/pretendard_extrabold"/>
     </LinearLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

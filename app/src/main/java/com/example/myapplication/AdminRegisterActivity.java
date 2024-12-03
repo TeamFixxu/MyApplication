@@ -72,7 +72,8 @@ AdminRegisterActivity extends AppCompatActivity {
                 // 학번을 이메일 형식으로 변환하여 Firebase Auth에 전달
                 String email = strManagertNum + "@myapp.com";
 
-                mFirebaseAuth.createUserWithEmailAndPassword(email, strPwd).addOnCompleteListener(AdminRegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                mFirebaseAuth.createUserWithEmailAndPassword(email, strPwd)
+                        .addOnCompleteListener(AdminRegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("mBtnRegister", "이메일 패스워드 함수 실행");
@@ -83,18 +84,18 @@ AdminRegisterActivity extends AppCompatActivity {
                                 String userId = firebaseUser.getUid();
                                 Log.d("mBtnRegister", "사용자 인증 성공 : " + userId);
 
-//                            UserAccount account = new UserAccount();
-//                            account.setIdToken(firebaseUser.getUid());
-//                            account.setStudentId(strStudentNum); // 학번 저장
-//                            account.setPhoneNum(strPhone); //전화번호 저장
-//                            account.setPassword(strPwd); //비밀번호 저장
                                 Map<String, Object> manager = new HashMap<>();
                                 manager.put("Manager Num", strManagertNum);
                                 manager.put("Phone Num", strPhone);
                                 manager.put("role", "manager");
+                                manager.put("report", 0);
+                                manager.put("point", 0);
                                 Log.d("mBtnRegister", "맵");
 
-                                mFirebaseStore.collection("manager").document(userId).set(manager).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                mFirebaseStore.collection("users")
+                                        .document(userId)
+                                        .set(manager)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Log.d("mBtnRegister", "스토어 저장");
@@ -113,7 +114,7 @@ AdminRegisterActivity extends AppCompatActivity {
 
                             //mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
                             //Toast.makeText(RegisterActivity.this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(AdminRegisterActivity.this, MapsActivity_user.class);
+                            Intent intent = new Intent(AdminRegisterActivity.this, MapsActivity_admin.class);
                             startActivity(intent);
                             finish();
                         } else {
