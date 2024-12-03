@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                     if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
                                                                         // 관리자 로그인 성공
-                                                                        Intent intent = new Intent(LoginActivity.this, MapsActivity_admin.class);
+                                                                        Intent intent = new Intent(LoginActivity.this, MapsActivity_user.class);
                                                                         startActivity(intent);
                                                                         Toast.makeText(LoginActivity.this, "관리자 로그인 성공", Toast.LENGTH_SHORT).show();
                                                                     } else {

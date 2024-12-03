@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.databinding.ActivityMembershipBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 public class
 AdminRegisterActivity extends AppCompatActivity {
+    private ActivityMembershipBinding binding;
 
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
     //private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
@@ -35,10 +37,12 @@ AdminRegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_membership);
+
+        binding = ActivityMembershipBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        //mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         mFirebaseStore = FirebaseFirestore.getInstance();
 
         mEtManagerNum = findViewById(R.id.editTextStudentId);
@@ -74,11 +78,10 @@ AdminRegisterActivity extends AppCompatActivity {
                         Log.d("mBtnRegister", "이메일 패스워드 함수 실행");
                         if(task.isSuccessful() && mFirebaseAuth.getCurrentUser() != null){
                             FirebaseUser firebaseUser = task.getResult().getUser();
-                            Log.d("mBtnRegister", "만약 회원가입 성공이라면...");
 
                             if(firebaseUser != null) {
                                 String userId = firebaseUser.getUid();
-                                Log.d("mBtnRegister", "만약 파베 유저가 널이 아니라면...");
+                                Log.d("mBtnRegister", "사용자 인증 성공 : " + userId);
 
 //                            UserAccount account = new UserAccount();
 //                            account.setIdToken(firebaseUser.getUid());
@@ -100,8 +103,10 @@ AdminRegisterActivity extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.d("mBtnRegister", "스토어 저장 실패");
-                                        Toast.makeText(AdminRegisterActivity.this, "회원가입 완료, 사용자정보 저장실패", Toast.LENGTH_SHORT).show();
+                                        Log.d("mBtnRegister", "스토어 저장 실패" + e.getMessage(),e);
+                                        Log.d("mBtnRegister", "Manager Num: " + strManagertNum);
+                                        Log.d("mBtnRegister", "Phone Num: " + strPhone);
+                                        Toast.makeText(AdminRegisterActivity.this, "회원가입 완료, 사용자정보 저장실패" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
