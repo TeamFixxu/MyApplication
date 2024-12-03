@@ -59,6 +59,9 @@ public class MapsActivity_user extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent getintent = getIntent();
+        String userNum = getintent.getStringExtra("userNum");
+        Log.d("PBY", "userNum : " + userNum);
         super.onCreate(savedInstanceState);
 
         binding = ActivityMapsUserBinding.inflate(getLayoutInflater());
@@ -83,6 +86,7 @@ public class MapsActivity_user extends AppCompatActivity implements OnMapReadyCa
 
         binding.setupButton.setOnClickListener(v -> {
             Intent intent = new Intent(MapsActivity_user.this, Setting.class);
+            intent.putExtra("userNum", userNum);
             startActivity(intent);
         });
 

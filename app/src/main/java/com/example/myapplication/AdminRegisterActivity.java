@@ -115,6 +115,7 @@ AdminRegisterActivity extends AppCompatActivity {
                             //mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
                             //Toast.makeText(RegisterActivity.this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(AdminRegisterActivity.this, MapsActivity_admin.class);
+                            intent.putExtra("userNum", strManagertNum);
                             startActivity(intent);
                             finish();
                         } else {

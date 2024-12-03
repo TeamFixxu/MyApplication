@@ -68,10 +68,12 @@ public class LoginActivity extends AppCompatActivity {
                                                     Log.d("Login", "User data: " + task.getResult().toString());
                                                     if ("student".equals(role)) {
                                                         Intent intent = new Intent(LoginActivity.this, MapsActivity_user.class);
+                                                        intent.putExtra("userNum", strNum); //학번 전달
                                                         startActivity(intent);
                                                         Toast.makeText(LoginActivity.this, "학생 로그인 성공", Toast.LENGTH_SHORT).show();
                                                     } else if ("manager".equals(role)) {
                                                         Intent intent = new Intent(LoginActivity.this, MapsActivity_admin.class);
+                                                        intent.putExtra("userNum", strNum); //학번 전달
                                                         startActivity(intent);
                                                         Toast.makeText(LoginActivity.this, "관리자 로그인 성공", Toast.LENGTH_SHORT).show();
                                                     } else {

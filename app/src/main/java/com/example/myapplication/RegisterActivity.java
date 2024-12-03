@@ -114,6 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         });
                             }
                             Intent intent = new Intent(RegisterActivity.this, MapsActivity_user.class);
+                            intent.putExtra("userNum", strStudentNum); //학번 전달
                             startActivity(intent);
                             finish();
                         } else {

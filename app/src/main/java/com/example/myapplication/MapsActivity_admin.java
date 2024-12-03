@@ -60,6 +60,10 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent getintent = getIntent();
+        String managerNum = getintent.getStringExtra("userNum");
+        Log.d("PBY", "managerNum : " + managerNum);
+
         super.onCreate(savedInstanceState);
 
         binding = ActivityMapsAdminBinding.inflate(getLayoutInflater());

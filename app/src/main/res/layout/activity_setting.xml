@@ -76,23 +76,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
-    <!-- 전화번호 입력 EditText -->
-    <EditText
-        android:id="@+id/editTextPhone"
-        android:layout_width="260dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#E0E0E0"
-        android:hint="*전화번호"
-        android:textSize="13dp"
-        android:fontFamily="@font/pretendard_medium"
-        android:inputType="phone"
-        android:padding="16dp"
-        android:textColorHint="#888888"
-        app:layout_constraintTop_toBottomOf="@id/editTextPoints"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5" />
 
     <!-- 로그아웃 Button -->
     <Button
@@ -106,7 +89,7 @@
         android:textSize="16sp"
         app:cornerRadius="13dp"
         android:fontFamily="@font/pretendard_extrabold"
-        app:layout_constraintTop_toBottomOf="@id/editTextPhone"
+        app:layout_constraintTop_toBottomOf="@id/editTextPoints"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
