@@ -69,11 +69,12 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private String  imageFilePath;
     private Uri photoUri;
-    private int pin_type;
+    private int pin_type=0;
 
     private GoogleMap mMap;
     private BottomSheetBehavior<View> infoBottomSheetBehavior;
     private GestureDetector gestureDetector;
+    private Marker userMarker;
     FirebaseFirestore testdb;
     public ActivityMapsUserBinding binding;
     Dialog AddDialog; //의견추가하는 다이얼로그라서 add라고 이름지음
@@ -87,6 +88,11 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // --------------무슨 코드인지 물어보기
+        // ----------------------------------
+        //Intent getintent = getIntent();
+        //String userNum = getintent.getStringExtra("userNum");
+        //Log.d("PBY", "userNum : " + userNum);
         super.onCreate(savedInstanceState);
 
         binding = ActivityMapsUserBinding.inflate(getLayoutInflater());
@@ -123,7 +129,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                             // image 표시
                             imagePath = result.getData().getStringExtra("image_path");
                             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
                             binding.image.setImageBitmap(bitmap);
                             binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                             binding.imageButton.setVisibility(View.INVISIBLE);
@@ -442,6 +447,20 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         binding.pinLost.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinWork.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinHelp.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        LatLng soongsil_univ = new LatLng(37.4963, 126.9572);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 18));
+
+        mMap.setOnMapLongClickListener(latLng -> {
+            userMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.pink_pin, pin_width, pin_height))));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        });
     }
 
     private Bitmap getResizedBitmap(int drawableRes, int width, int height) {

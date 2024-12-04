@@ -9,8 +9,7 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        ></androidx.camera.view.PreviewView>
+        android:layout_height="match_parent"/>
 
     <ImageButton
         android:layout_width="60dp"
@@ -24,5 +23,4 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         app:tint="#fff"
         />
-
 </RelativeLayout>

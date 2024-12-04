@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8F8F8"
-    tools:context=".Membership">
+    tools:context=".RegisterActivity">
 
+    <!-- Title TextView -->
     <!-- Title TextView -->
     <TextView
         android:id="@+id/textView"
@@ -22,7 +23,23 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="160dp" />
 
-    <!-- 학번/교직원 번호 EditText -->
+    <!-- 관리자 인증번호 EditText -->
+    <EditText
+        android:id="@+id/editTextManagerName"
+        android:layout_width="260dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#E0E0E0"
+        android:hint="*관리자 이름"
+        android:textSize="13dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:padding="16dp"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
     <EditText
         android:id="@+id/editTextStudentId"
         android:layout_width="260dp"
@@ -34,12 +51,46 @@
         android:fontFamily="@font/pretendard_medium"
         android:padding="16dp"
         android:textColorHint="#888888"
-        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintTop_toBottomOf="@id/editTextManagerName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
+    <!-- 비밀번호 입력 EditText -->
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="260dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#E0E0E0"
+        android:hint="*비밀번호 입력"
+        android:textSize="13dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/editTextStudentId"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
 
+    <!-- 비밀번호 확인 EditText -->
+    <EditText
+        android:id="@+id/editTextPasswordConfirm"
+        android:layout_width="260dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#E0E0E0"
+        android:hint="*비밀번호 확인"
+        android:textSize="13dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/editTextPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
 
     <!-- 전화번호 입력 EditText -->
     <EditText
@@ -54,7 +105,7 @@
         android:inputType="phone"
         android:padding="16dp"
         android:textColorHint="#888888"
-        app:layout_constraintTop_toBottomOf="@id/editTextStudentId"
+        app:layout_constraintTop_toBottomOf="@id/editTextPasswordConfirm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
