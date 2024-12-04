@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.databinding.ActivityAdminListBinding;
-import com.example.myapplication.databinding.ActivityAdminMembershipBinding;
+import com.example.myapplication.databinding.ActivityAdminRegisterBinding;
 import com.example.myapplication.databinding.ActivityMembershipBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class
 AdminRegisterActivity extends AppCompatActivity {
-    private ActivityAdminMembershipBinding binding;
+    private ActivityAdminRegisterBinding binding;
 
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
     //private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
@@ -40,7 +40,7 @@ AdminRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityAdminMembershipBinding.inflate(getLayoutInflater());
+        binding = ActivityAdminRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 

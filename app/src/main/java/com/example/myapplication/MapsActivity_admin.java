@@ -46,13 +46,10 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
     private GestureDetector gestureDetector;
     private String imagePath;
     private Marker userMarker;
-    private int pinType = 0;
     private int pin_height = 110;
     private int pin_width = 90;
-    private int pin_type;
-
+    private int pin_type=0;
     private @NonNull ActivityMapsAdminBinding binding;
-
     private static final int PIN_Delete = 1;
     private static final int PIN_REPAIR = 2;
     private static final int PIN_COMPLETE = 3;
@@ -85,12 +82,12 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
         binding.pinDelete.setOnClickListener(this);
         binding.pinSolve.setOnClickListener(this);
         binding.pinComplete.setOnClickListener(this);
-
         binding.setupButton.setOnClickListener(v -> {
             Intent intent = new Intent(MapsActivity_admin.this, Setting_admin.class);
             intent.putExtra("userNum", managerNum);
             startActivity(intent);
         });
+
 
         // 권한 요청
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -110,6 +107,7 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
                         }
                     }
                 });
+
 
         binding.imageButton.setOnClickListener(v -> launcher.launch(new Intent(this, CameraActivity.class)));
 

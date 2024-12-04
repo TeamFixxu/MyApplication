@@ -229,6 +229,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 @Override
                 public void onClick(View view) {
                     holder.pinItemBinding.pin.setBackground(getResources().getDrawable(R.drawable.tag_pressed));
+
                 }
             });
         }
@@ -238,7 +239,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             return map.size();
         }
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -415,7 +415,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 .addOnFailureListener(e ->
                         Log.e("eun", "Error saving marker", e));
     }
-
     public void onClick(View v){
         clear_pin();
 
@@ -441,28 +440,13 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         binding.imageButton.setVisibility(View.VISIBLE);
         binding.image.setVisibility(View.INVISIBLE);
     }
-    private void clear_pin(){
-        pin_type=0;
+    private void clear_pin() {
+        pin_type = 0;
         binding.pinCrash.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinLost.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinWork.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinHelp.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
-
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        LatLng soongsil_univ = new LatLng(37.4963, 126.9572);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 18));
-
-        mMap.setOnMapLongClickListener(latLng -> {
-            userMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.pink_pin, pin_width, pin_height))));
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        });
     }
-
     private Bitmap getResizedBitmap(int drawableRes, int width, int height) {
         // Drawable 리소스를 Bitmap으로
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
