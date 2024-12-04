@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="button_default_color">#EFEFEF</color> <!-- 회색 -->
+    <color name="button_default_darkGray">#D9D9D9</color>
     <color name="button_pressed_color_pink">#FFB0DC</color> <!-- 핑크색 -->
     <color name="button_pressed_color_blue">#569AFF</color> <!-- 파란색 -->
+    <color name="button_pressed_color_yellow">#FFE347</color>
+    <color name="default_textColor">#A0A0A0</color>
 </resources>

@@ -170,7 +170,6 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         });
     }
-
     private Bitmap getResizedBitmap(int drawableRes, int width, int height) {
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
         return Bitmap.createScaledBitmap(originalBitmap, width, height, false);

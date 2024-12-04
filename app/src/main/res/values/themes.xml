@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+    <style name="Maps_User" parent="Theme.MyApplication">
+        <item name="colorPrimary">@color/button_default_color</item>
+        <item name="buttonStyle">@style/CustomButtonStyle</item>
+    </style>
 </resources>

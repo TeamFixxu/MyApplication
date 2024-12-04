@@ -27,7 +27,7 @@
             android:layout_margin="5dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/set_wheel_button" />
+            android:src="@drawable/set_wheel_button"/>
 
         <ImageButton
             android:id="@+id/help_list_Button"
@@ -37,7 +37,7 @@
             android:layout_marginRight="10dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/help_list_button" />
+            android:src="@drawable/help_list_button"/>
 
     </LinearLayout>
 
@@ -71,7 +71,9 @@
                 android:lineHeight="28.64dp"
                 android:fontFamily="@font/pretendard_extrabold"/>
         </FrameLayout>
+
         <!-- 버튼 레이아웃 -->
+
         <LinearLayout
             android:id="@+id/linear_layout"
             android:layout_width="wrap_content"
@@ -79,66 +81,120 @@
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp">
-            <!-- 버튼들 -->
 
             <!-- 버튼들 -->
+
             <Button
-                android:id="@+id/pin_delete"
+                android:id="@+id/pin_crash"
+                android:background="@drawable/button_not_pressed"
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
+                android:layout_height="35dp"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
                 android:textSize="20sp"
-                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
-                android:text="핀 삭제"/>
+                android:text="고장"/>
 
             <Button
-                android:id="@+id/pin_repair"
+                android:id="@+id/pin_lost"
+                android:background="@drawable/button_not_pressed"
+
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
+                android:layout_height="35dp"
                 android:textSize="20sp"
-                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
                 android:layout_marginLeft="10dp"
-                android:text="수리"/>
+                android:text="분실물"/>
 
             <Button
-                android:id="@+id/pin_complete"
+                android:id="@+id/pin_work"
+                android:background="@drawable/button_not_pressed"
+
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
+                android:layout_height="35dp"
                 android:textSize="20sp"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
-                android:text="공사 완료"/>
+                android:layout_marginLeft="10dp"
+                android:text="공사중"/>
 
             <Button
-                android:id="@+id/pin_solve"
+                android:id="@+id/pin_help"
+                android:background="@drawable/button_not_pressed"
+                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
+                android:layout_height="35dp"
                 android:textSize="20sp"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
-                android:text="해결 완료"/>
+                android:layout_marginLeft="10dp"
+                android:text="도움 필요"/>
+
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="319dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal">
 
-        <!-- 이미지 버튼 -->
+            <Button
+                android:id="@+id/addTagButton"
+                android:background="@drawable/button_not_pressed"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:text="+"
+                android:textSize="15sp"
+                android:textColor="@color/default_textColor"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="0dp"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_weight="1"
+                android:id="@+id/pin_recyclerview"
+                android:layout_width="319dp"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/round_spinner"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="장소   :  "
+                android:textSize="20sp"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:layout_marginLeft="20dp"
+                />
+
+            <Spinner
+                android:id="@+id/location_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/장소"
+                />
+        </LinearLayout>
 
         <!-- 상세 내용 -->
         <FrameLayout
