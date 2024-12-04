@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.databinding.ActivityAdminListBinding;
+import com.example.myapplication.databinding.ActivityAdminMembershipBinding;
 import com.example.myapplication.databinding.ActivityMembershipBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,19 +28,19 @@ import java.util.Map;
 
 public class
 AdminRegisterActivity extends AppCompatActivity {
-    private ActivityMembershipBinding binding;
+    private ActivityAdminMembershipBinding binding;
 
     private FirebaseAuth mFirebaseAuth; // 파이어 베이스 인증
     //private DatabaseReference mDatabaseRef; //실시간 데이터 베이스
     FirebaseFirestore mFirebaseStore;
-    private EditText mEtManagerNum,mEtPwd,mEtConfirmPwd, mEtPhoneNum;
+    private EditText mEtManagerNum,mEtManagerName,mEtPwd,mEtConfirmPwd, mEtPhoneNum;
     private Button mBtnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMembershipBinding.inflate(getLayoutInflater());
+        binding = ActivityAdminMembershipBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 
@@ -46,7 +48,9 @@ AdminRegisterActivity extends AppCompatActivity {
         mFirebaseStore = FirebaseFirestore.getInstance();
 
         mEtManagerNum = findViewById(R.id.editTextStudentId);
+
         mEtPwd = findViewById(R.id.editTextPassword);
+        mEtManagerName = findViewById(R.id.editTextManagerName);
         mBtnRegister = findViewById(R.id.btnSignUp);
         mEtConfirmPwd = findViewById(R.id.editTextPasswordConfirm);
         mEtPhoneNum = findViewById(R.id.editTextPhone);
@@ -56,10 +60,11 @@ AdminRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("mBtnRegister", "onClick");
-                String strManagertNum = mEtManagerNum.getText().toString();
+                String strManagerNum = mEtManagerNum.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
                 String strPhone = mEtPhoneNum.getText().toString();
                 String strConfirmPwd = mEtConfirmPwd.getText().toString();
+                String name = mEtManagerName.getText().toString();
 
                 // 비밀번호와 확인 비밀번호가 일치하는지 확인
                 if (!strPwd.equals(strConfirmPwd)) {
@@ -70,7 +75,7 @@ AdminRegisterActivity extends AppCompatActivity {
                 }
 
                 // 학번을 이메일 형식으로 변환하여 Firebase Auth에 전달
-                String email = strManagertNum + "@myapp.com";
+                String email = strManagerNum + "@myapp.com";
 
                 mFirebaseAuth.createUserWithEmailAndPassword(email, strPwd)
                         .addOnCompleteListener(AdminRegisterActivity.this, new OnCompleteListener<AuthResult>() {
@@ -85,7 +90,8 @@ AdminRegisterActivity extends AppCompatActivity {
                                 Log.d("mBtnRegister", "사용자 인증 성공 : " + userId);
 
                                 Map<String, Object> manager = new HashMap<>();
-                                manager.put("Manager Num", strManagertNum);
+                                manager.put("Manager Num", strManagerNum);
+                                manager.put("name", name);
                                 manager.put("Phone Num", strPhone);
                                 manager.put("role", "manager");
                                 manager.put("report", 0);
@@ -105,7 +111,7 @@ AdminRegisterActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         Log.d("mBtnRegister", "스토어 저장 실패" + e.getMessage(),e);
-                                        Log.d("mBtnRegister", "Manager Num: " + strManagertNum);
+                                        Log.d("mBtnRegister", "Manager Num: " + strManagerNum);
                                         Log.d("mBtnRegister", "Phone Num: " + strPhone);
                                         Toast.makeText(AdminRegisterActivity.this, "회원가입 완료, 사용자정보 저장실패" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
@@ -115,7 +121,7 @@ AdminRegisterActivity extends AppCompatActivity {
                             //mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
                             //Toast.makeText(RegisterActivity.this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(AdminRegisterActivity.this, MapsActivity_admin.class);
-                            intent.putExtra("userNum", strManagertNum);
+                            intent.putExtra("userNum", strManagerNum);
                             startActivity(intent);
                             finish();
                         } else {

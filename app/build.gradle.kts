@@ -34,7 +34,10 @@ android {
     viewBinding{
         enable = true
     }
-//    buildFeatures {
+    buildFeatures {
+        viewBinding = true
+    }
+    //    buildFeatures {
 //        viewBinding = true
 //    }
 }
@@ -48,13 +51,18 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)//파이어베이스 스토어 추가
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+    implementation ("androidx.recyclerview:recyclerview:1.3.1")
     implementation("androidx.camera:camera-core:1.4.0")
     implementation("androidx.camera:camera-camera2:1.2.2")
     implementation("androidx.camera:camera-lifecycle:1.4.0")
     implementation("androidx.camera:camera-view:1.4.0")
     implementation("com.google.guava:guava:31.1-android")
     implementation ("com.google.android.material:material:1.9.0")
-    implementation(libs.play.services.maps) //map
+    implementation(libs.play.services.maps)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview) //map
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

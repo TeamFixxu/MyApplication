@@ -86,6 +86,12 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
         binding.pinSolve.setOnClickListener(this);
         binding.pinComplete.setOnClickListener(this);
 
+        binding.setupButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MapsActivity_admin.this, Setting_admin.class);
+            intent.putExtra("userNum", managerNum);
+            startActivity(intent);
+        });
+
         // 권한 요청
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
 

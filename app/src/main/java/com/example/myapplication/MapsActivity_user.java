@@ -90,6 +90,11 @@ public class MapsActivity_user extends AppCompatActivity implements OnMapReadyCa
             startActivity(intent);
         });
 
+        binding.helpListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MapsActivity_user.this, AdminList.class);
+            startActivity(intent);
+        });
+
         // 권한 요청
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
 

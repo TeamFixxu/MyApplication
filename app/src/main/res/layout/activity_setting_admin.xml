@@ -41,15 +41,14 @@
 
     <!-- 비밀번호 입력 EditText -->
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/editSolReport"
         android:layout_width="260dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="#E0E0E0"
-        android:hint="*비밀번호"
+        android:hint="*해결한 사건 수"
         android:textSize="13dp"
         android:fontFamily="@font/pretendard_medium"
-        android:inputType="textPassword"
         android:padding="16dp"
         android:textColorHint="#888888"
         app:layout_constraintTop_toBottomOf="@id/editTextStudentId"
@@ -69,7 +68,7 @@
         android:fontFamily="@font/pretendard_medium"
         android:padding="16dp"
         android:textColorHint="#888888"
-        app:layout_constraintTop_toBottomOf="@id/editTextPassword"
+        app:layout_constraintTop_toBottomOf="@id/editSolReport"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
