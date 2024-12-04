@@ -16,29 +16,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication"
+        android:theme="@style/Maps_User"
         tools:targetApi="31">
         <activity
-            android:name=".CameraActivity"
+            android:name=".StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
+            android:name=".CameraActivity"
+            android:exported="true">
+
+        </activity>
+<!--        <activity
             android:name=".pin_inflater"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
-        <activity
-            android:name=".CameraActivity"
-            android:exported="false" />
+        <-->
         <activity
             android:name=".AdminList"
             android:exported="false" />
@@ -49,17 +50,21 @@
 
         <activity
             android:name=".MapsActivity_user"
-            android:exported="false"
-            android:label="@string/title_activity_maps_user" />
+            android:exported="true"
+            android:label="@string/title_activity_maps_user">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".AdminRegisterActivity"
             android:exported="false" />
         <activity
             android:name=".Setting"
             android:exported="false" />
-        <activity
-            android:name=".Membership"
-            android:exported="false" />
+
         <activity
             android:name=".UserCheckActivity"
             android:exported="false" />
@@ -72,15 +77,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".StartActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

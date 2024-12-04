@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="장소">
+        <item>정보과학관</item>
+        <item>미래관</item>
+        <item>진리관</item>
+        <item>조만식기념관</item>
+        <item>문화관</item>
+    </string-array>
+</resources>

@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.view.ViewGroup.LayoutParams;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -18,14 +21,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.myapplication.databinding.AddDialogBinding;
+import com.example.myapplication.databinding.PinItemBinding;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,17 +52,20 @@ import com.example.myapplication.CameraActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapsActivity_user extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener{
 
-    private static final int PIN_Delete = 1;
-    private static final int PIN_REPAIR = 2;
-    private static final int PIN_COMPLETE = 3;
-    private static final int PIN_SOLVE = 4;
+    private static final int PIN_CRASH = 1;
+    private static final int PIN_LOST = 2;
+    private static final int PIN_WORK = 3;
+    private static final int PIN_HELP = 4;
 
     private String imagePath;
+    private String location;
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private String  imageFilePath;
     private Uri photoUri;
@@ -87,22 +97,21 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         testdb = FirebaseFirestore.getInstance(); //firebase 인스턴스 생성
 
-        binding.pinRepair.setOnClickListener(this);
-        binding.pinDelete.setOnClickListener(this);
-        binding.pinSolve.setOnClickListener(this);
-        binding.pinComplete.setOnClickListener(this);
+        binding.pinCrash.setOnClickListener(this);
+        binding.pinLost.setOnClickListener(this);
+        binding.pinHelp.setOnClickListener(this);
+        binding.pinWork.setOnClickListener(this);
 
         //권한 요청
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
 
         View infoBottomSheet = findViewById(R.id.bottom_sheet);
-        infoBottomSheetBehavior = BottomSheetBehavior.from(infoBottomSheet);
-        infoBottomSheetBehavior.setPeekHeight(200);
-        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
 
         //초기화
         infoBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
         infoBottomSheetBehavior.setPeekHeight(200);
+        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         clear();
 
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -144,6 +153,84 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         if (mapFragment != null){
             mapFragment.getMapAsync(this);
+        }
+
+
+        HashMap<Integer,String> map = new HashMap<>();
+        map.put(0,"Tag1");
+        map.put(1,"Tag2");
+        map.put(2,"Tag3");
+        map.put(3,"Tag4");
+        map.put(4,"Tag5");
+
+        binding.pinRecyclerview.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+        binding.pinRecyclerview.setAdapter((new PinAdapter(map)));
+
+        binding.addTagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+            }
+        });
+
+        binding.locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                location=adapterView.getItemAtPosition(i).toString();
+                Log.d("PBY",location);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
+    }
+    private class PinViewHolder extends RecyclerView.ViewHolder {
+        private PinItemBinding pinItemBinding;
+
+        public PinViewHolder(PinItemBinding pinItemBinding) {
+            super(pinItemBinding.getRoot());
+            this.pinItemBinding = pinItemBinding;
+        }
+    }
+    private class PinAdapter extends RecyclerView.Adapter<PinViewHolder>{
+        HashMap<Integer,String> map;
+
+        public PinAdapter(HashMap<Integer, String> map) {
+            this.map = map;
+        }
+
+        @NonNull
+        @Override
+        public PinViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            PinItemBinding pinItemBinding = PinItemBinding
+                    .inflate(LayoutInflater.from(parent.getContext()),parent,false);
+            return new PinViewHolder(pinItemBinding);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull PinViewHolder holder, int position) {
+            holder.pinItemBinding.pin.setId(position);
+            holder.pinItemBinding.pin.setText("#"+map.get(position));
+
+
+            holder.pinItemBinding.pin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.pinItemBinding.pin.setBackground(getResources().getDrawable(R.drawable.tag_pressed));
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return map.size();
         }
     }
 
@@ -327,22 +414,18 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     public void onClick(View v){
         clear_pin();
 
-        if(v == binding.pinDelete){
-            binding.pinDelete.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                    , R.color.button_pressed_color_pink));
-            pin_type=PIN_Delete;}
-        else if(v == binding.pinComplete){
-            binding.pinComplete.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                    , R.color.button_pressed_color_blue));
-            pin_type=PIN_COMPLETE;}
-        else if(v== binding.pinSolve){
-            binding.pinSolve.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                    , R.color.button_pressed_color_blue));
-            pin_type=PIN_SOLVE;}
-        else if(v==binding.pinRepair){
-            binding.pinRepair.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                    , R.color.button_pressed_color_blue));
-            pin_type=PIN_REPAIR;
+        if(v == binding.pinCrash){
+            binding.pinCrash.setBackground(getResources().getDrawable(R.drawable.pin_pressed));
+            pin_type=PIN_CRASH;}
+        else if(v == binding.pinLost){
+            binding.pinLost.setBackground(getResources().getDrawable(R.drawable.pin_pressed));
+            pin_type=PIN_LOST;}
+        else if(v== binding.pinWork){
+            binding.pinWork.setBackground(getResources().getDrawable(R.drawable.pin_pressed));
+            pin_type=PIN_WORK;}
+        else if(v==binding.pinHelp){
+            binding.pinHelp.setBackground(getResources().getDrawable(R.drawable.pin_pressed));
+            pin_type=PIN_HELP;
         }
     }
     private void clear(){
@@ -355,15 +438,10 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     }
     private void clear_pin(){
         pin_type=0;
-        binding.pinDelete.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                , R.color.button_default_color));
-        binding.pinComplete.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                , R.color.button_default_color));
-        binding.pinSolve.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                , R.color.button_default_color));
-        binding.pinRepair.setBackgroundColor(ContextCompat.getColor(MapsActivity_user.this
-                , R.color.button_default_color));
-
+        binding.pinCrash.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
+        binding.pinLost.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
+        binding.pinWork.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
+        binding.pinHelp.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
     }
 
     private Bitmap getResizedBitmap(int drawableRes, int width, int height) {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/pin"
+    android:layout_width="wrap_content"
+    android:layout_height="30dp"
+    android:textSize="12sp"
+    android:textColor="#444444"
+    android:fontFamily="@font/pretendard_extrabold"
+    android:paddingVertical="0dp"
+    android:paddingHorizontal="10dp"
+    android:minWidth="0dp"
+    android:text=""
+    android:background="@drawable/button_not_pressed"
+    android:layout_marginLeft="5dp"
+    />

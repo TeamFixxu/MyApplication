@@ -6,13 +6,18 @@
         <item name="android:textSize">56sp</item>
         <item name="android:textColor">#A0A0A0</item>
     </style>
-    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="backgroundTint">#A0A0A0</item>
-    </style>
+
     <style name="CustomImageButtonStyle" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">15dp</item>
     </style>
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="backgroundTint">#A0A0A0</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">15dp</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
 
 
 
