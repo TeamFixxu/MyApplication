@@ -389,6 +389,13 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         return documentName;
     }
 
+    private Bitmap getResizedBitmap(int drawableRes, int width, int height) {
+        // Drawable 리소스를 Bitmap으로
+        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
+        // Bitmap 크기 조절
+        return Bitmap.createScaledBitmap(originalBitmap, width, height, false);
+    }
+
     private Bitmap createBitmapFromView(View view) {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
