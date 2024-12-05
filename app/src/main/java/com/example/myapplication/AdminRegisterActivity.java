@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.databinding.ActivityAdminListBinding;
@@ -23,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +40,11 @@ AdminRegisterActivity extends AppCompatActivity {
     FirebaseFirestore mFirebaseStore;
     private EditText mEtManagerNum,mEtManagerName,mEtPwd,mEtConfirmPwd, mEtPhoneNum;
     private Button mBtnRegister;
+
+    private Spinner spinnerLocation;
+    private String[] locations;
+    private boolean[] selectedLocations;
+    private ArrayList<Integer> selectedItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,45 @@ AdminRegisterActivity extends AppCompatActivity {
         mBtnRegister = findViewById(R.id.btnSignUp);
         mEtConfirmPwd = findViewById(R.id.editTextPasswordConfirm);
         mEtPhoneNum = findViewById(R.id.editTextPhone);
+
+        Button buttonShowDialog = findViewById(R.id.buttonShowDialog);
+
+        // 체크박스 목록 데이터
+        String[] items = {"베어드홀","숭덕경상관",
+                "문화관","미래관","안익태기념관","형남공학관",
+                "교육관","백마관","한경직기념관","벤처중소기업센터",
+                "신양관","진리관","조만식기념관",
+                "한국기독교박물관","중앙도서관","연구관",
+                "창신관","Global Brain Hall","Residence Hall",
+                "전산관","정보과학관","웨스트민스터홀","학생회관","창의관","대운동장"
+        };
+        boolean[] checkedItems = new boolean[items.length]; // 초기 선택 상태
+        ArrayList<String> selectedItems = new ArrayList<>(); // 선택된 항목 저장용
+
+        buttonShowDialog.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(AdminRegisterActivity.this);
+            builder.setTitle("관활 구역 선택");
+
+            builder.setMultiChoiceItems(items, checkedItems, (dialog, which, isChecked) -> {
+                if (isChecked) {
+                    // 항목이 선택되면 추가
+                    selectedItems.add(items[which]);
+                } else {
+                    // 항목이 선택 해제되면 제거
+                    selectedItems.remove(items[which]);
+                }
+            });
+
+            // 확인 버튼
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                Log.d("관할 구역을 선택하셨습니다.", selectedItems.toString());
+            });
+
+            // 취소 버튼
+            builder.setNegativeButton("취소", (dialog, which) -> dialog.dismiss());
+
+            builder.create().show();
+        });
 
 
         mBtnRegister.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +145,7 @@ AdminRegisterActivity extends AppCompatActivity {
                                 manager.put("role", "manager");
                                 manager.put("report", 0);
                                 manager.put("point", 0);
+                                manager.put("regions", selectedItems);
                                 Log.d("mBtnRegister", "맵");
 
                                 mFirebaseStore.collection("users")
@@ -117,9 +167,6 @@ AdminRegisterActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-
-                            //mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
-                            //Toast.makeText(RegisterActivity.this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(AdminRegisterActivity.this, MapsActivity_admin.class);
                             intent.putExtra("userNum", strManagerNum);
                             startActivity(intent);

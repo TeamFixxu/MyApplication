@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="장소">
+    <string-array name="location">
         <item>베어드홀</item>
         <item>숭덕경상관</item>
         <item>문화관</item>

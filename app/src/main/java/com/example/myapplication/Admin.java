@@ -1,13 +1,16 @@
 package com.example.myapplication;
+
+import java.util.List;
+
 public class Admin {
     private String name;
-    private String region; // 관할구역
+    private List<String> regions; // 타입 변경
     private String phone;  // 전화번호
     private String profileImageUrl; // 프로필 사진 URL
 
-    public Admin(String name, String region, String phone, String profileImageUrl) {
+    public Admin(String name, List<String> regions, String phone, String profileImageUrl) {
         this.name = name;
-        this.region = region;
+        this.regions = regions; // null 방지
         this.phone = phone;
         this.profileImageUrl = profileImageUrl;
     }
@@ -17,7 +20,7 @@ public class Admin {
     }
 
     public String getRegion() {
-        return region;
+        return String.join(", ", regions);
     }
 
     public String getPhone() {

@@ -41,11 +41,11 @@ public class AdminList extends AppCompatActivity {
                         adminList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String name = document.getString("name");
-                            String region = document.getString("region"); // 관할구역
+                            List<String> regions = (List<String>) document.get("regions");
                             String phone = document.getString("Phone Num");   // 전화번호
                             String profileImageUrl = document.getString("profileImageUrl"); // 이미지 URL
 
-                            adminList.add(new Admin(name, region, phone, profileImageUrl));
+                            adminList.add(new Admin(name, regions, phone, profileImageUrl));
                         }
                         adminAdapter.notifyDataSetChanged();
                     } else {

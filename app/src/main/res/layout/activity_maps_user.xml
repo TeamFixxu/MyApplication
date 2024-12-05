@@ -192,11 +192,11 @@
                 android:id="@+id/location_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/장소"
+                android:entries="@array/location"
                 />
         </LinearLayout>
 
-        <!-- 상세 내용 -->
+        <!-- 상세 내용 -->rla
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
