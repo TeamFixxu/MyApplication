@@ -92,6 +92,7 @@
                 android:textSize="20sp"
                 android:backgroundTint="@color/button_default_color"
                 android:textColor="#444444"
+                app:cornerRadius="13dp"
                 android:fontFamily="@font/pretendard_extrabold"
                 android:text="핀 삭제"/>
 
@@ -107,6 +108,7 @@
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
                 android:layout_marginLeft="10dp"
+                app:cornerRadius="13dp"
                 android:text="수리"/>
 
             <Button
@@ -121,6 +123,7 @@
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
+                app:cornerRadius="13dp"
                 android:text="공사 완료"/>
 
             <Button
@@ -135,6 +138,7 @@
                 android:paddingVertical="0dp"
                 android:paddingHorizontal="10dp"
                 android:minWidth="0dp"
+                app:cornerRadius="13dp"
                 android:text="해결 완료"/>
         </LinearLayout>
 
@@ -207,6 +211,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:backgroundTint="#2858FF"
+            app:cornerRadius="13dp"
             android:fontFamily="@font/pretendard_extrabold"/>
     </LinearLayout>
 
