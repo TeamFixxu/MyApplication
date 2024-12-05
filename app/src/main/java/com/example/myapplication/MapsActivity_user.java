@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -49,8 +51,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import com.example.myapplication.MarkerData;
 import com.example.myapplication.CameraActivity;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,156 +93,173 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private int pin_width = 90;
 
     private String studentNum;
+    private PinAdapter adapter; // 핀 어댑터
+    //private ArrayList<String> itemList;
+    private int currentKey = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Intent 데이터 수신
         Intent getintent = getIntent();
         studentNum = getintent.getStringExtra("userNum");
 
         binding = ActivityMapsUserBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        testdb = FirebaseFirestore.getInstance(); //firebase 인스턴스 생성
+        testdb = FirebaseFirestore.getInstance(); // Firebase 인스턴스 생성
+        // Firestore 인스턴스 생성
+        FirebaseFirestore testdb = FirebaseFirestore.getInstance();
+        CollectionReference tagsRef = testdb.collection("tags");
+
+// 태그 데이터 가져오기 및 RecyclerView 업데이트
+        tagsRef.orderBy("usageCount", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("Firestore", "Error fetching tags", error);
+                        return;
+                    }
+
+                    if (value != null) {
+                        ArrayList<String> tagList = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : value) {
+                            String tagName = doc.getId(); // 문서 ID를 태그 이름으로 사용
+                            tagList.add(tagName);
+                        }
+                        adapter.updateTags(tagList); // RecyclerView 갱신
+                    }
+                });
+
+
 
         binding.pinCrash.setOnClickListener(this);
         binding.pinLost.setOnClickListener(this);
         binding.pinHelp.setOnClickListener(this);
         binding.pinWork.setOnClickListener(this);
 
-        //권한 요청
-        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
 
-        View infoBottomSheet = findViewById(R.id.bottom_sheet);
+        // RecyclerView와 어댑터 초기화
 
+        adapter = new PinAdapter(this); //핀관련
 
-        //초기화
-        infoBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
-        infoBottomSheetBehavior.setPeekHeight(200);
-        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        clear();
-
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK){
-                            // binding.image.
-                            // image 표시
-                            imagePath = result.getData().getStringExtra("image_path");
-                            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
-                            binding.image.setImageBitmap(bitmap);
-                            binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            binding.imageButton.setVisibility(View.INVISIBLE);
-                            binding.image.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-        binding.imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launcher.launch(new Intent(MapsActivity_user.this,CameraActivity.class));
-//
-            }
-        });
-
-        binding.upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("PBY","detail : " + binding.detailEdit.getText().toString());
-                Log.d("PBY","image_path : " + imagePath);
-                Log.d("PBY","pin type : " + pin_type);
-
-                infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                clear();
-            }
-        });
-
-        if (mapFragment != null){
-            mapFragment.getMapAsync(this);
-        }
+        binding.pinRecyclerview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        binding.pinRecyclerview.setAdapter(adapter); //핀관련
 
 
-        HashMap<Integer,String> map = new HashMap<>();
-        map.put(0,"Tag1");
-        map.put(1,"Tag2");
-        map.put(2,"Tag3");
-        map.put(3,"Tag4");
-        map.put(4,"Tag5");
+        // 태그 추가 버튼 이벤트 처리
+        binding.addTagButton.setOnClickListener(view -> showInputDialog()); //핀관련
 
-        binding.pinRecyclerview.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, false));
-        binding.pinRecyclerview.setAdapter((new PinAdapter(map)));
-
-        binding.addTagButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-            }
-        });
-
+        // Spinner 이벤트 처리
         binding.locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                location=adapterView.getItemAtPosition(i).toString();
-                Log.d("PBY",location);
+                location = adapterView.getItemAtPosition(i).toString();
+                Log.d("PBY", location);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
+        // 지도 설정
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
+        // 이미지 버튼 설정
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        imagePath = result.getData().getStringExtra("image_path");
+                        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
 
+                        binding.image.setImageBitmap(bitmap);
+                        binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        binding.imageButton.setVisibility(View.INVISIBLE);
+                        binding.image.setVisibility(View.VISIBLE);
+                    }
+                });
+
+        binding.imageButton.setOnClickListener(view -> launcher.launch(new Intent(MapsActivity_user.this, CameraActivity.class)));
+
+        // 업로드 버튼 설정
+        binding.upload.setOnClickListener(view -> {
+            Log.d("PBY", "detail : " + binding.detailEdit.getText().toString());
+            Log.d("PBY", "image_path : " + imagePath);
+            Log.d("PBY", "pin type : " + pin_type);
+
+            infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            clear();
+        });
+
+        // BottomSheet 초기화
+        infoBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
+        infoBottomSheetBehavior.setPeekHeight(200);
+        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        // 권한 요청
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
     }
-    private class PinViewHolder extends RecyclerView.ViewHolder {
-        private PinItemBinding pinItemBinding;
 
-        public PinViewHolder(PinItemBinding pinItemBinding) {
-            super(pinItemBinding.getRoot());
-            this.pinItemBinding = pinItemBinding;
-        }
+    private void fetchTagsFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("tags")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String tagName = document.getString("name");
+                            if (tagName != null) {
+                                adapter.addItem(tagName);
+                            }
+                        }
+                        Log.d("MapsActivity_user", "태그 로드 성공");
+                    } else {
+                        Log.e("MapsActivity_user", "태그 로드 실패", task.getException());
+                    }
+                });
     }
-    private class PinAdapter extends RecyclerView.Adapter<PinViewHolder>{
-        HashMap<Integer,String> map;
+    public void handleTagClick(String tagName) {
+        DocumentReference tagDocRef = testdb.collection("tags").document(tagName);
 
-        public PinAdapter(HashMap<Integer, String> map) {
-            this.map = map;
-        }
+        tagDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // 태그가 존재하면 usageCount 증가
+                long usageCount = documentSnapshot.getLong("usageCount") != null ? documentSnapshot.getLong("usageCount") : 0;
+                testdb.collection("tags").document(tagName).update("usageCount", usageCount + 1);
+            } else {
+                // 태그가 없으면 새로 추가
+                Map<String, Object> newTag = new HashMap<>();
+                newTag.put("name", tagName);
+                newTag.put("usageCount", 1);
+                tagDocRef.set(newTag);
+            }
+        });
+    }
+    private void showInputDialog() {  // 핀 다이얼로그
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("새 태그 추가");
 
-        @NonNull
-        @Override
-        public PinViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            PinItemBinding pinItemBinding = PinItemBinding
-                    .inflate(LayoutInflater.from(parent.getContext()),parent,false);
-            return new PinViewHolder(pinItemBinding);
-        }
+        final EditText input = new EditText(this);
+        builder.setView(input);
 
-        @Override
-        public void onBindViewHolder(@NonNull PinViewHolder holder, int position) {
-            holder.pinItemBinding.pin.setId(position);
-            holder.pinItemBinding.pin.setText("#"+map.get(position));
+        builder.setPositiveButton("추가", (dialog, which) -> {
+            String newTag = input.getText().toString().trim();
+            if (!newTag.isEmpty()) {
+                adapter.addItem(newTag); //추가했을때 이게 돔.
+                handleTagClick(newTag); // 태그 추가 또는  빈도 업데이트
+            }
+        });
 
-
-            holder.pinItemBinding.pin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.pinItemBinding.pin.setBackground(getResources().getDrawable(R.drawable.tag_pressed));
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return map.size();
-        }
+        builder.setNegativeButton("취소", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
 
@@ -317,8 +341,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         }
 
     }
-
-    //일단 오류가 계속 나니깐 이렇게 해둠
     public boolean onMarkerClick2(Marker marker) {
         CameraUpdate center = CameraUpdateFactory.newLatLng(marker.getPosition());
         mMap.animateCamera(center);
@@ -365,37 +387,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         });
         return true;
     }
-
-    /*public void showMarkerDialog(Marker marker){
-
-        AddDialog.show();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.
-        Button addButton = findViewById(R.id.add_button);
-
-        addButton.setEnabled(true);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addButton.setEnabled(false);
-                addButton.setBackgroundColor(Integer.parseInt("#A0A0A0"));
-
-                String markerId = marker.getId();
-                if (markerDataMap.containsKey(marker)){
-                    MarkerData clickedMarkerData = markerDataMap.get(marker);
-
-                    int newCount = clickedMarkerData.getAddPersonCount() + 1;
-                    clickedMarkerData.setAddPersonCount(newCount);
-
-                    Toast.makeText(MapsActivity_user.this, "의견이 추가 됐습니다.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MapsActivity_user.this, "마커 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    } */
-
     private void saveMarkerToFirestore(Marker marker, MarkerData markerData) {
         //데이터 준비
         Map<String, Object> data = new HashMap<>();
@@ -448,7 +439,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         binding.pinWork.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinHelp.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
     }
-
     private Bitmap getResizedBitmap(int drawableRes, int width, int height) {
         // Drawable 리소스를 Bitmap으로
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
