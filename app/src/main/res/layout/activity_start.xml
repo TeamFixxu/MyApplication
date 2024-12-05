@@ -40,10 +40,7 @@
             android:text="@string/fixxu"
             android:textAppearance="@style/fixxu" />
 
-
     </RelativeLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

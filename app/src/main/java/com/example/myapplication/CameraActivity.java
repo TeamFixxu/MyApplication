@@ -19,9 +19,11 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
@@ -88,6 +90,7 @@ public class CameraActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageCapture.takePicture(ContextCompat.getMainExecutor(CameraActivity.this),
                         new ImageCapture.OnImageCapturedCallback() {
+                            @OptIn(markerClass = ExperimentalGetImage.class)
                             @Override
                             public void onCaptureSuccess(@NonNull ImageProxy image) {
                                 Image mediaImage = image.getImage();
