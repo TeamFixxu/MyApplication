@@ -304,35 +304,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         return true;
     }
 
-    /*public void showMarkerDialog(Marker marker){
-
-        AddDialog.show();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.
-        Button addButton = findViewById(R.id.add_button);
-
-        addButton.setEnabled(true);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addButton.setEnabled(false);
-                addButton.setBackgroundColor(Integer.parseInt("#A0A0A0"));
-
-                String markerId = marker.getId();
-                if (markerDataMap.containsKey(marker)){
-                    MarkerData clickedMarkerData = markerDataMap.get(marker);
-
-                    int newCount = clickedMarkerData.getAddPersonCount() + 1;
-                    clickedMarkerData.setAddPersonCount(newCount);
-
-                    Toast.makeText(MapsActivity_user.this, "의견이 추가 됐습니다.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MapsActivity_user.this, "마커 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    } */
 
     private void saveMarkerToFirestore(Marker marker, MarkerData markerData) {
         CollectionReference markerColleciton = mFirebaseStore.collection("fixxu");
@@ -418,13 +389,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         return documentName;
     }
 
-    private Bitmap getResizedBitmap(int drawableRes, int width, int height) {
-        // Drawable 리소스를 Bitmap으로
-        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
-        // Bitmap 크기 조절
-        return Bitmap.createScaledBitmap(originalBitmap, width, height, false);
-    }
-
     private Bitmap createBitmapFromView(View view) {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
@@ -476,8 +440,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             // 아이콘 업데이트
             marker.setIcon(BitmapDescriptorFactory.fromBitmap(markerBitmap));
 
-            // Anchor 설정 (아이콘 중심점 설정)
-            //marker.setAnchor(0.5f, 1.0f);  // 기본적으로 하단 중앙을 Anchor로 설정
         }
     }
 }
