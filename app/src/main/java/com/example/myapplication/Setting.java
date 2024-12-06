@@ -32,11 +32,12 @@ public class Setting extends AppCompatActivity {
         ActivitySettingBinding binding = ActivitySettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
         Intent getintent = getIntent();
         String userNum = getintent.getStringExtra("userNum");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users")
+        FirebaseFirestore mFirebaseFirestore = FirebaseFirestore.getInstance();
+        mFirebaseFirestore.collection("users")
                 .whereEqualTo("userNum", userNum)  // userNum이 일치하는 사용자 찾기
                 .get()
                 .addOnCompleteListener(task -> {

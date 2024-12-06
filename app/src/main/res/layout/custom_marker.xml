@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="70dp">
+
+    <ImageView
+        android:id="@+id/marker_image"
+        android:layout_width="50dp"
+        android:layout_height="51dp"
+        android:src="@drawable/gray_pin" /> <!-- 기본 마커 이미지 -->
+
+    <TextView
+        android:id="@+id/marker_badge"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-20dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/marker_image"
+        android:background="@drawable/red_circle"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+    <!--
+        <TextView
+            android:id="@+id/marker_badge"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/marker_image"
+            android:background="@drawable/red_circle"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />  초기에는 안보이도록 설정 -->
+</RelativeLayout>

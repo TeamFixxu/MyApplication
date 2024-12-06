@@ -8,6 +8,4 @@
     <color name="button_pressed_color_blue">#569AFF</color> <!-- 파란색 -->
     <color name="button_pressed_color_yellow">#FFE347</color>
     <color name="default_textColor">#A0A0A0</color>
-
-
 </resources>

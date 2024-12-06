@@ -13,7 +13,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -71,6 +70,24 @@ dependencies {
     implementation("com.google.guava:guava:31.1-android")
     implementation ("com.google.android.material:material:1.9.0")
     implementation(kotlin("script-runtime"))
+
+    implementation ("com.github.ybq:Android-SpinKit:1.4.0")
+    implementation ("androidx.appcompat:appcompat:1.3.1")
+    implementation ("com.google.android.material:material:1.4.0") //추가
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.1")
+    testImplementation ("junit:junit:4.+")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.4.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    implementation ("com.firebaseui:firebase-ui-storage:8.0.2")
+    implementation ("com.firebaseui:firebase-ui-firestore:8.0.0")
+    implementation ("com.firebaseui:firebase-ui-storage:8.0.2")
+    implementation ("androidx.paging:paging-runtime:3.2.1")
     //implementation ("com.github.razaghimahdi:Android-Loading-Dots:1.3.2") //로딩 라이브러리
 
 }

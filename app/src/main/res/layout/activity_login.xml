@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StartActivity">
+
+    <!-- RelativeLayout을 match_parent로 변경 -->
+    <RelativeLayout
+        android:id="@+id/some_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:clipToOutline="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+
+        <TextView
+            android:id="@+id/fixxu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="170dp"
+            android:fontFamily="@font/pretendard_extrabold"
+            android:gravity="top"
+            android:layout_centerHorizontal="true"
+            android:text="@string/fixxu"
+            android:textAppearance="@style/fixxu" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="280dp"
+            android:textColor="#444444"
+            android:textSize="24sp"
+            android:fontFamily="@font/pretendard_extrabold"
+            android:text="로그인" />
+
+        <EditText
+            android:id="@+id/button"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="340dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#A0A0A0"
+            android:textSize="15sp"
+            android:backgroundTint="#EFEFEF"
+            app:cornerRadius="0dp"
+            android:hint="학번/관리자번호를 입력해주세요" />
+
+
+        <EditText
+            android:id="@+id/button2"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="420dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#A0A0A0"
+            android:textSize="15sp"
+            android:backgroundTint="#EFEFEF"
+            app:cornerRadius="0dp"
+            android:hint="비밀번호를 입력해주세요" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button2"
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="270dp"
+            android:textSize="11sp"
+            app:layout_constraintTop_toBottomOf="@id/button2"
+            app:layout_constraintEnd_toEndOf="@id/button2"
+            android:layout_marginEnd="0dp"
+            android:text="비밀번호 찾기" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="525dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:backgroundTint="#2858FF"
+            app:cornerRadius="13dp"
+            android:text="로그인" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="585dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/pretendard_medium"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:backgroundTint="#FF69B4"
+            app:cornerRadius="13dp"
+            android:text="회원가입" />
+
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
