@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +59,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -65,6 +68,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,9 +101,15 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private int pin_height = 110;
     private int pin_width = 90;
 
+    private String studentNum;
+    private PinAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent getintent = getIntent();
+        studentNum = getintent.getStringExtra("userNum");
 
         binding = ActivityMapsUserBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -117,7 +127,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         infoBottomSheetBehavior.setPeekHeight(200);
         infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         clear();
-
+        //카메라
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -141,7 +151,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 //
             }
         });
-
+        //카메라 끝
 
         if (mapFragment != null){
             mapFragment.getMapAsync(this);
@@ -190,37 +200,121 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             }
         });
 
-        HashMap<Integer,String> map = new HashMap<>();
-        map.put(0,"Tag1");
-        map.put(1,"Tag2");
-        map.put(2,"Tag3");
-        map.put(3,"Tag4");
-        map.put(4,"Tag5");
+        ////////////////////태그 태그 태그 태그
+        CollectionReference tagsRef = mFirebaseStore.collection("tags");
+        // 태그 데이터 가져오기 및 RecyclerView 업데이트
+        tagsRef.orderBy("usageCount", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("Firestore", "Error fetching tags", error);
+                        return;
+                    }
 
-        binding.pinRecyclerview.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, false));
-        binding.pinRecyclerview.setAdapter((new PinAdapter(map)));
+                    if (value != null) {
+                        ArrayList<String> tagList = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : value) {
+                            String tagName = doc.getId(); // 문서 ID를 태그 이름으로 사용
+                            tagList.add(tagName);
+                        }
+                        adapter.updateTags(tagList); // RecyclerView 갱신
+                    }
+                });
 
-        binding.addTagButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        // RecyclerView와 어댑터 초기화
 
-            }
-        });
+        adapter = new PinAdapter(this); //핀관련
 
+        binding.pinRecyclerview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        binding.pinRecyclerview.setAdapter(adapter); //핀관련
+
+
+        // 태그 추가 버튼 이벤트 처리
+        binding.addTagButton.setOnClickListener(view -> showInputDialog()); //핀관련
+
+        // Spinner 이벤트 처리
         binding.locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                location=adapterView.getItemAtPosition(i).toString();
-                Log.d("PBY",location);
+                location = adapterView.getItemAtPosition(i).toString();
+                Log.d("PBY", location);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+        /////////////태그 끝
     }
 
+    private void fetchTagsFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("tags")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String tagName = document.getString("name");
+                            if (tagName != null) {
+                                adapter.addItem(tagName);
+                            }
+                        }
+                        Log.d("MapsActivity_user", "태그 로드 성공");
+                    } else {
+                        Log.e("MapsActivity_user", "태그 로드 실패", task.getException());
+                    }
+                });
+    }
+
+    public void handleTagClick(String tagName) {
+        DocumentReference tagDocRef = mFirebaseStore.collection("tags").document(tagName);
+
+        tagDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // 태그가 존재하면 usageCount 증가
+                long usageCount = documentSnapshot.getLong("usageCount") != null ? documentSnapshot.getLong("usageCount") : 0;
+                mFirebaseStore.collection("tags").document(tagName).update("usageCount", usageCount + 1);
+            } else {
+                // 태그가 없으면 새로 추가
+                Map<String, Object> newTag = new HashMap<>();
+                newTag.put("name", tagName);
+                newTag.put("usageCount", 1);
+                tagDocRef.set(newTag);
+            }
+        });
+    }
+
+    private void showInputDialog() {
+        // 다이얼로그 뷰를 inflate
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_tag, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        // 뷰에서 요소 참조
+        EditText input = dialogView.findViewById(R.id.tag_input);
+        Button cancelButton = dialogView.findViewById(R.id.cancel_button);
+        Button addButton = dialogView.findViewById(R.id.add_button);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        // 추가 버튼 동작
+        addButton.setOnClickListener(v -> {
+            String newTag = input.getText().toString().trim();
+            if (!newTag.isEmpty()) {
+                adapter.addItem(newTag); // 태그 추가
+                handleTagClick(newTag); // 빈도 업데이트
+                dialog.dismiss();
+            }
+        });
+
+        // 취소 버튼 동작
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
     public void addMarker(LatLng latLng) {        //addMarker로 이름 바꿈 원래 addCustomMarker
         thisMarker = null; //초기값 설정
 
@@ -628,48 +722,5 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 });
     }
 
-
-    private class PinViewHolder extends RecyclerView.ViewHolder {
-        private PinItemBinding pinItemBinding;
-
-        public PinViewHolder(PinItemBinding pinItemBinding) {
-            super(pinItemBinding.getRoot());
-            this.pinItemBinding = pinItemBinding;
-        }
-    }
-    private class PinAdapter extends RecyclerView.Adapter<PinViewHolder>{
-        HashMap<Integer,String> map;
-
-        public PinAdapter(HashMap<Integer, String> map) {
-            this.map = map;
-        }
-
-        @NonNull
-        @Override
-        public PinViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            PinItemBinding pinItemBinding = PinItemBinding
-                    .inflate(LayoutInflater.from(parent.getContext()),parent,false);
-            return new PinViewHolder(pinItemBinding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull PinViewHolder holder, int position) {
-            holder.pinItemBinding.pin.setId(position);
-            holder.pinItemBinding.pin.setText("#"+map.get(position));
-
-
-            holder.pinItemBinding.pin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.pinItemBinding.pin.setBackground(getResources().getDrawable(R.drawable.tag_pressed));
-
-                }
-            });
-        }
-        @Override
-        public int getItemCount() {
-            return map.size();
-        }
-    }
 
 }

@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="160dp" />
+        android:layout_marginTop="100dp" />
 
     <!-- 관리자 인증번호 EditText -->
     <EditText
@@ -109,6 +109,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
+    <Button
+        android:id="@+id/buttonShowDialog"
+        android:layout_width="260dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#E0E0E0"
+        android:padding="16dp"
+        android:fontFamily="@font/pretendard_extrabold"
+        android:textColorHint="#444444"
+        android:text="관할 구역 선택"
+        app:layout_constraintTop_toBottomOf="@id/editTextPhone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
     <!-- 회원가입 Button -->
     <Button
         android:id="@+id/btnSignUp"
@@ -121,9 +136,8 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:fontFamily="@font/pretendard_extrabold"
-        app:layout_constraintTop_toBottomOf="@id/editTextPhone"
+        app:layout_constraintTop_toBottomOf="@id/buttonShowDialog"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

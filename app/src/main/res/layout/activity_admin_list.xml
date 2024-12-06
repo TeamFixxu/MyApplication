@@ -6,6 +6,19 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- 검색바 -->
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search tags..."
+        android:padding="12dp"
+        android:background="@android:drawable/edit_text"
+        android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="8dp" />
+
+    <!-- 태그 리스트 RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

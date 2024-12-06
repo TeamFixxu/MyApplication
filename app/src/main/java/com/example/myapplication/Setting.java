@@ -32,6 +32,11 @@ public class Setting extends AppCompatActivity {
         ActivitySettingBinding binding = ActivitySettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Action Bar 숨기기
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         Intent getintent = getIntent();
         String userNum = getintent.getStringExtra("userNum");
 
