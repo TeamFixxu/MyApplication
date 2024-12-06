@@ -260,6 +260,7 @@
             android:layout_height="38dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
+            android:background="@drawable/round_button"
             android:backgroundTint="#2858FF"
             android:fontFamily="@font/pretendard_extrabold"/>
     </LinearLayout>

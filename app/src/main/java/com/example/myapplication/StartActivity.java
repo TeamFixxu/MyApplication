@@ -26,18 +26,6 @@ public class StartActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        TextView textView = findViewById(R.id.fixxu);
-
-        String htmlString = getString(R.string.fixxu);
-        Spanned spanned;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            spanned = Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            spanned = Html.fromHtml(htmlString);
-        }
-
-        textView.setText(spanned); // HTML 형식 적용
 
         new Handler().postDelayed(new Runnable() {
             @Override

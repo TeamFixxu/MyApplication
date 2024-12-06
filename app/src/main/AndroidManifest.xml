@@ -17,26 +17,27 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_monochrome"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".CameraActivity"
+            android:name=".MapsActivity_admin"
             android:exported="false" />
         <activity
             android:name=".Setting_admin"
             android:exported="false" />
         <activity
-            android:name=".MapsActivity_admin"
+            android:name=".CameraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminList"
             android:exported="false" />
 
         <meta-data
@@ -48,19 +49,19 @@
             android:exported="false"
             android:label="@string/title_activity_maps_user" />
         <activity
-            android:name=".AdminList"
-            android:exported="false" />
-        <activity
             android:name=".AdminRegisterActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".Setting"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".UserCheckActivity"
             android:exported="false" />
         <activity
-            android:name=".UserCheckActivity"
+            android:name=".UserAccount"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

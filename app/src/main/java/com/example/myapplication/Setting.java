@@ -60,7 +60,7 @@ public class Setting extends AppCompatActivity {
                             // 데이터를 가져온 후 UI 업데이트
                             binding.editTextStudentId.setText("사용자 번호 : " + StudentNum);
                             binding.editTextReports.setText("신고 건수 : " + report);
-                            binding.editTextPoints.setText("포인트 : " + point);
+                            binding.editTextPoints.setText("내 포인트 : " + point);
                         } else {
                             // 일치하는 문서가 없을 경우
                             Log.d("Firestore", "No documents found with the specified userNum");

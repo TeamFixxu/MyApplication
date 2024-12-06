@@ -33,6 +33,7 @@
         android:backgroundTint="#2858FF"
         app:cornerRadius="13dp"
         android:text="네, 사용자입니다."
+        android:background="@drawable/round_button"
         app:layout_constraintTop_toBottomOf="@id/fixxu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -49,6 +50,7 @@
         android:backgroundTint="#2858FF"
         app:cornerRadius="13dp"
         android:text="아니요, 관리자입니다."
+        android:background="@drawable/round_button"
         app:layout_constraintTop_toBottomOf="@id/button3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

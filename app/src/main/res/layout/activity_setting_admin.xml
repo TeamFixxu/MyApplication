@@ -103,6 +103,7 @@
         android:textSize="16sp"
         app:cornerRadius="13dp"
         android:fontFamily="@font/pretendard_extrabold"
+        android:background="@drawable/round_button"
         app:layout_constraintTop_toBottomOf="@id/editTextPhone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

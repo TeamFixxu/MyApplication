@@ -69,6 +69,8 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
         binding = ActivityMapsAdminBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        getSupportActionBar().hide();
+
         // Google Maps 초기화
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

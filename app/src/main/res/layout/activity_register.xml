@@ -65,6 +65,7 @@
             android:layout_marginTop="420dp"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/pretendard_medium"
+            android:inputType="textPassword"
             android:textColor="#A0A0A0"
             android:textSize="15sp"
             android:backgroundTint="#EFEFEF"
@@ -94,6 +95,7 @@
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:backgroundTint="#2858FF"
+            android:background="@drawable/round_button"
             app:cornerRadius="13dp"
             android:text="로그인" />
 
@@ -107,6 +109,7 @@
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:backgroundTint="#FF69B4"
+            android:background="@drawable/round_button"
             app:cornerRadius="13dp"
             android:text="회원가입" />
 
