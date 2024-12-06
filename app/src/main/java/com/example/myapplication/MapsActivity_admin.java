@@ -71,6 +71,14 @@ public class MapsActivity_admin extends AppCompatActivity implements OnMapReadyC
 
         getSupportActionBar().hide();
 
+        binding.helpListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity_admin.this, ReportList.class);
+                startActivity(intent);
+            }
+        });
+
         // Google Maps 초기화
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

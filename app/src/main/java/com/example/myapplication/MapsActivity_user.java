@@ -58,6 +58,7 @@ import com.example.myapplication.CameraActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -498,6 +499,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         data.put("pinType", markerData.getPinType());
         data.put("latitude", marker.getPosition().latitude);
         data.put("longitude", marker.getPosition().longitude);
+        data.put("createdAt", FieldValue.serverTimestamp());  //생성 시간 추가!!
         //Task<Void> set = markers.document(marker.getId()).set(data); //마커 저장하는데 시간이 걸릴 수도 있으니 이렇게 쓰라고 여기서 추천함.
         //markers.document(marker.getID()).set(data); //원래 코드
         Log.d("eun", "data firebase에 저장함.");

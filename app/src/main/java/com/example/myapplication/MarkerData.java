@@ -1,11 +1,15 @@
 package com.example.myapplication;
 
+import java.sql.Timestamp;
+
 public class MarkerData {
     private int addPersonCount;
     private Boolean isCreator; //0이면 신고자가 아님. 1이면 신고자
     private String description;
     private int pinType;
     private String location;
+
+    //private Timestamp createdAt;
 
 
     public MarkerData(){} //firebase 사용하려면 인수없는 기본 생성자 필요
