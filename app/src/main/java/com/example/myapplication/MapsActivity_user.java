@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -68,6 +70,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,8 +81,8 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private static final int PIN_LOST = 2;
     private static final int PIN_WORK = 3;
     private static final int PIN_HELP = 4;
-
     private String imagePath;
+    private Uri fileUri;
     private String location;
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private String  imageFilePath;
@@ -128,14 +131,14 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         clear();
         //카메라
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+        ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK){
-                            // binding.image.
-                            // image 표시
+
                             imagePath = result.getData().getStringExtra("image_path");
+                            fileUri = Uri.fromFile(new File(imagePath));
                             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                             binding.image.setImageBitmap(bitmap);
                             binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -144,11 +147,49 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                         }
                     }
                 });
-            binding.imageButton.setOnClickListener(new View.OnClickListener() {
+        ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == RESULT_OK) {
+                    // Process selected image from gallery
+                    fileUri = result.getData().getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), fileUri);
+                        binding.image.setImageBitmap(bitmap);
+                        binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        binding.imageButton.setVisibility(View.INVISIBLE);
+                        binding.image.setVisibility(View.VISIBLE);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        binding.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launcher.launch(new Intent(MapsActivity_user.this,CameraActivity.class));
-//
+                String[] options = {"카메라로 찍기", "갤러리에서 선택"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity_user.this);
+                builder.setTitle("이미지 선택");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            cameraLauncher.launch(new Intent(MapsActivity_user.this,CameraActivity.class));
+
+                        } else if (which == 1) {
+                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            galleryLauncher.launch(intent);
+
+                        }
+                    }
+                });
+                builder.show();
+
+
             }
         });
         //카메라 끝
@@ -186,7 +227,8 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         binding.setupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity_user.this, Setting.class);
+                Intent intent = new Intent(MapsActivity_user.this, Setting.class)
+                        .putExtra("userNum", studentNum);
                 startActivity(intent);
             }
         });
@@ -485,7 +527,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         return true;
     }
 
-
     private void saveMarkerToFirestore(Marker marker, MarkerData markerData) {
         CollectionReference markerColleciton = mFirebaseStore.collection("fixxu");
        //데이터 준비
@@ -520,7 +561,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                     Toast.makeText(MapsActivity_user.this, "마커 저장 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-        uploadImageToStorage(imagePath,filename);
+        uploadImageToStorage(fileUri,filename);
     }
 
     public void onClick(View v){
@@ -582,15 +623,9 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         return bitmap;
     }
 
-
-    private void uploadImageToStorage(String imagePath,String filename) {
-        if (imagePath == null || imagePath.isEmpty()) {
-            Toast.makeText(this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void uploadImageToStorage(Uri fileUri,String filename) {
 
         String filename2 = filename;
-        Uri fileUri = Uri.fromFile(new File(imagePath));
         String fileNameTemp = "images/" + System.currentTimeMillis() + ".jpg";
 
         FirebaseStorage storage = FirebaseStorage.getInstance();

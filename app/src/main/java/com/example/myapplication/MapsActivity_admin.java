@@ -307,7 +307,7 @@ public class MapsActivity_admin extends FragmentActivity implements OnMapReadyCa
         LatLng soongsil_univ = new LatLng(37.4963, 126.9572); //숭실대 위치
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 17));
 
-        mMap.setOnMapLongClickListener(this::addCustomMarker);
+//        mMap.setOnMapLongClickListener(this::addCustomMarker);
         Log.i("eun","클릭");
         //mMap.setOnMarkerClickListener(this::onMarkerClick);
 
@@ -339,43 +339,43 @@ public class MapsActivity_admin extends FragmentActivity implements OnMapReadyCa
         });
     }
 
-    public void addCustomMarker(LatLng latLng) {
-        Marker thisMarker = null; //초기값 설정
-
-        //Map에 저장할 정보들을 바텀시트를 통해 가져와야함.
-        MarkerData data = new MarkerData(0, false, "Hi", 0);
-
-        int pinType = data.getPinType();
-        //여기서 pintype을 위의 data의 값으로 대신 해줘야함. 테스트를 위해 그냥 pintype씀
-        if (pinType == 0){
-            thisMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng).draggable(true)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.pink_pin, 80, 100))));
-        } else if (pinType == 1) {
-            thisMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng).draggable(true)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.yellow_pin, 80, 100))));
-        }
-        else if (pinType == 2) {
-            thisMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng).draggable(true)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.blue_pin, 80, 100))));
-        }
-        else {
-            Toast.makeText(this, "잘못된 핀 타입입니다.", Toast.LENGTH_SHORT).show();
-        }
-
-        if (thisMarker != null){
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            markerDataMap.put(thisMarker, data);
-            Log.d("eun","map에 put 성공");
-            saveMarkerToFirestore(thisMarker, data);
-            Toast.makeText(this, "마커와 데이터가 저장됐습니다." + data.getDescription(), Toast.LENGTH_SHORT).show();
-        } else{
-            Toast.makeText(this, "마커를 추가하지 못했습니다.", Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    public void addCustomMarker(LatLng latLng) {
+//        Marker thisMarker = null; //초기값 설정
+//
+//        //Map에 저장할 정보들을 바텀시트를 통해 가져와야함.
+//        MarkerData data = new MarkerData(0, false, "Hi", 0);
+//
+//        int pinType = data.getPinType();
+//        //여기서 pintype을 위의 data의 값으로 대신 해줘야함. 테스트를 위해 그냥 pintype씀
+//        if (pinType == 0){
+//            thisMarker = mMap.addMarker(new MarkerOptions()
+//                    .position(latLng).draggable(true)
+//                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.pink_pin, 80, 100))));
+//        } else if (pinType == 1) {
+//            thisMarker = mMap.addMarker(new MarkerOptions()
+//                    .position(latLng).draggable(true)
+//                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.yellow_pin, 80, 100))));
+//        }
+//        else if (pinType == 2) {
+//            thisMarker = mMap.addMarker(new MarkerOptions()
+//                    .position(latLng).draggable(true)
+//                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.blue_pin, 80, 100))));
+//        }
+//        else {
+//            Toast.makeText(this, "잘못된 핀 타입입니다.", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        if (thisMarker != null){
+//            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//            markerDataMap.put(thisMarker, data);
+//            Log.d("eun","map에 put 성공");
+//            saveMarkerToFirestore(thisMarker, data);
+//            Toast.makeText(this, "마커와 데이터가 저장됐습니다." + data.getDescription(), Toast.LENGTH_SHORT).show();
+//        } else{
+//            Toast.makeText(this, "마커를 추가하지 못했습니다.", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
     //일단 오류가 계속 나니깐 이렇게 해둠
     public boolean onMarkerClick2(Marker marker) {

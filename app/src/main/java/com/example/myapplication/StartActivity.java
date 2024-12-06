@@ -23,6 +23,9 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         TextView textView = findViewById(R.id.fixxu);
 
         //ProgressBar foldingCube = (ProgressBar)findViewById(R.id.FoldingCube);

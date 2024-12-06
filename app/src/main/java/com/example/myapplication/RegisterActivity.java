@@ -52,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-        binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
+        binding.button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("mBtnRegister", "onClick");
