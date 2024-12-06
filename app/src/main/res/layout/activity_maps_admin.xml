@@ -14,11 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        >
+        app:layout_anchor="@+id/linearLayout"
+        app:layout_anchorGravity="bottom|center">
+
         <ImageButton
             android:id="@+id/setup_Button"
             android:layout_width="60dp"
@@ -38,25 +42,26 @@
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/help_list_button" />
-
     </LinearLayout>
+
 
     <!-- Bottom Sheet -->
     <LinearLayout
-        android:id="@+id/bottom_sheet"
+        android:id="@+id/admin_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@drawable/round_background"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_hideable="false">
+        android:orientation="vertical"
+        app:behavior_hideable="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <!-- 드래그 핸들 -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-                android:id="@+id/drag_handle_info"
+                android:id="@+id/admin_drag_handle_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -65,207 +70,130 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="30dp"
-                android:text="핀 변경 및 삭제"
-                android:textSize="24sp"
-                android:textColor="#444444"
+                android:fontFamily="@font/pretendard_extrabold"
                 android:lineHeight="28.64dp"
-                android:fontFamily="@font/pretendard_extrabold"/>
+                android:text="핀 변경 및 삭제"
+                android:textColor="#444444"
+                android:textSize="24sp" />
         </FrameLayout>
         <!-- 버튼 레이아웃 -->
         <LinearLayout
-            android:id="@+id/linear_layout"
+            android:id="@+id/admin_linear_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
             <!-- 버튼들 -->
             <Button
-                android:id="@+id/pin_crash"
-                android:background="@drawable/button_not_pressed"
+                android:id="@+id/admin_pin_repair"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:paddingVertical="0dp"
-                android:paddingHorizontal="10dp"
-                android:minWidth="0dp"
-                android:textSize="20sp"
-                android:textColor="#444444"
+                android:background="@drawable/button_not_pressed"
                 android:fontFamily="@font/pretendard_extrabold"
-                android:text="수리"/>
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="0dp"
+                android:text="수리"
+                android:textColor="#444444"
+                android:textSize="20sp" />
 
             <Button
-                android:id="@+id/pin_lost"
-                android:background="@drawable/button_not_pressed"
-
+                android:id="@+id/admin_pin_complete"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:textSize="20sp"
-                android:textColor="#444444"
-                android:fontFamily="@font/pretendard_extrabold"
-                android:paddingVertical="0dp"
-                android:paddingHorizontal="10dp"
-                android:minWidth="0dp"
                 android:layout_marginLeft="10dp"
-                android:text="공사완료"/>
+                android:background="@drawable/button_not_pressed"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="0dp"
+                android:text="공사완료"
+                android:textColor="#444444"
+                android:textSize="20sp" />
 
             <Button
-                android:id="@+id/pin_work"
-                android:background="@drawable/button_not_pressed"
-
+                android:id="@+id/admin_pin_solve"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:textSize="20sp"
-                android:textColor="#444444"
-                android:fontFamily="@font/pretendard_extrabold"
-                android:paddingVertical="0dp"
-                android:paddingHorizontal="10dp"
-                android:minWidth="0dp"
                 android:layout_marginLeft="10dp"
-                android:text="해결"/>
+                android:background="@drawable/button_not_pressed"
+                android:fontFamily="@font/pretendard_extrabold"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="0dp"
+                android:text="해결"
+                android:textColor="#444444"
+                android:textSize="20sp" />
 
             <Button
-                android:id="@+id/pin_help"
+                android:id="@+id/admin_pin_umm"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/button_not_pressed"
+                android:fontFamily="@font/pretendard_extrabold"
                 android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:textSize="20sp"
-                android:textColor="#444444"
-                android:fontFamily="@font/pretendard_extrabold"
-                android:paddingVertical="0dp"
+                android:minWidth="0dp"
                 android:paddingHorizontal="10dp"
-                android:minWidth="0dp"
-                android:layout_marginLeft="10dp"
-                android:text="미정"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="319dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/addTagButton"
-                android:background="@drawable/button_not_pressed"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:text="+"
-                android:textSize="15sp"
-                android:textColor="@color/default_textColor"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:fontFamily="@font/pretendard_extrabold"
                 android:paddingVertical="0dp"
-                android:paddingHorizontal="0dp"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_weight="1"
-                android:id="@+id/pin_recyclerview"
-                android:layout_width="319dp"
-                android:layout_height="wrap_content"
-                />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_marginTop="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/round_spinner"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="장소   :  "
-                android:textSize="20sp"
-                android:fontFamily="@font/pretendard_extrabold"
-                android:layout_marginLeft="20dp"
-                />
-
-            <Spinner
-                android:id="@+id/location_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:entries="@array/장소"
-                />
+                android:text="미정"
+                android:textColor="#444444"
+                android:textSize="20sp" />
         </LinearLayout>
 
-
-        <!-- 이미지 버튼 -->
 
         <!-- 상세 내용 -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            >
-            <Button
-                android:id="@+id/image_button"
-                style="@style/CustomButtonStyle"
-                android:layout_width="319dp"
-                android:layout_height="200dp"
-                android:background="@drawable/round_button"
-                android:fontFamily="@font/pretendard_extrabold"
-                android:text="사진 촬영"
-                android:textColor="#FAFAFA"
-                android:textSize="24sp"
-                android:backgroundTint="#A0A0A0"/>
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/image"
-                android:layout_width="319dp"
-                android:layout_height="200dp"
-                app:shapeAppearanceOverlay="@style/CustomImageButtonStyle"
-                />
-        </FrameLayout>
+            android:layout_marginTop="25dp" />
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/admin_singo_picture"
+            android:layout_width="336dp"
+            android:layout_height="289dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/admin_bottomsheet_location"
+            android:layout_width="134dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_extrabold"
+            android:text="신고 장소"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="40dp"
+            android:textColor="#000000"
+            android:textSize="19sp" />
+
+        <TextView
+            android:id="@+id/admin_bottomsheet_discription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/pretendard_extralight"
+            android:text="이영주 잃어버림"
+            android:textColor="#000000"
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/detail_edit"
-                android:hint="클릭하여 상세 내역을 입력하세요"
-                android:gravity="top|left"
-                android:layout_width="319dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:paddingLeft="25dp"
-                android:paddingTop="35dp"
-                android:background="@drawable/round_button"
-                android:backgroundTint="#D9D9D9"
-                android:fontFamily="@font/pretendard_medium"
-                android:textSize="15sp"/>
-
-
-            <TextView
-                android:id="@+id/detail_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="상세 내역"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="20dp"
-                android:fontFamily="@font/pretendard_extrabold"
-                android:visibility="visible"/>
-
-        </FrameLayout>
-
-        <!-- 업로드 버튼 -->
         <Button
-            android:id="@+id/upload"
-            android:text="업로드 하기"
+            android:id="@+id/admin_upload"
             android:layout_width="339dp"
             android:layout_height="38dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
-            android:backgroundTint="#2858FF"
             android:background="@drawable/round_button"
-            android:fontFamily="@font/pretendard_extrabold"/>
+            android:backgroundTint="#2858FF"
+            android:fontFamily="@font/pretendard_extrabold"
+            android:text="업로드 하기" />
     </LinearLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

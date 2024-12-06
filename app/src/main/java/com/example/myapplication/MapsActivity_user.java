@@ -374,8 +374,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-        //Map에 저장할 정보들을 바텀시트를 통해 가져와야함.
-        //upload
         binding.upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -388,6 +386,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 data.setDescription(binding.detailEdit.getText().toString());
                 data.setAddPersonCount(0);
 
+                updateSingoCnt(studentNum); /////////사용자 신고횟수, 포인트 변경
                 View markerView = createCustomMarkerView(0,pin_type); //비활성화 마커에서 커스텀마커로 변경
                 thisMarker.setIcon(BitmapDescriptorFactory.fromBitmap(createBitmapFromView(markerView)));
 
@@ -490,6 +489,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                             // 마커 아이콘 업데이트
                             updateMarkerIcon(marker, newCount, thisPinType); // pinType은 적절히 수정 필요
 
+
                             // Firebase에 업데이트
                             thisMarkerDoc.update("addPersonCount", newCount)
                                     .addOnSuccessListener(unused -> {
@@ -530,6 +530,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private void saveMarkerToFirestore(Marker marker, MarkerData markerData) {
         CollectionReference markerColleciton = mFirebaseStore.collection("fixxu");
        //데이터 준비
+        int state = 1;
         Map<String, Object> data = new HashMap<>();
         data.put("addPersonCount", markerData.getAddPersonCount());
         data.put("isCreator", markerData.getIsCreator());
@@ -538,6 +539,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         data.put("pinType", markerData.getPinType());
         data.put("latitude", marker.getPosition().latitude);
         data.put("longitude", marker.getPosition().longitude);
+        data.put("state", state);
         //Task<Void> set = markers.document(marker.getId()).set(data); //마커 저장하는데 시간이 걸릴 수도 있으니 이렇게 쓰라고 여기서 추천함.
         //markers.document(marker.getID()).set(data); //원래 코드
         Log.d("eun", "data firebase에 저장함.");
@@ -690,6 +692,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         return markerView;
     }
+
     private void updateMarkerIcon(Marker marker, int newBadgeCnt, int pinType) {
         if (marker == null) return;
 
@@ -757,5 +760,37 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 });
     }
 
+    private void updateSingoCnt(String userNum){
+
+        CollectionReference usersFirestore = mFirebaseStore.collection("users");
+        usersFirestore
+                .whereEqualTo("userNum", userNum)  // userNum이 일치하는 사용자 찾기
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (!querySnapshot.isEmpty()) {
+                            // 첫 번째 일치하는 문서 가져오기
+                            DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                            DocumentReference documentRef = document.getReference();
+                            Long pointLong = document.getLong("point");
+                            pointLong += 10;
+                            documentRef.update("point", pointLong);
+                            Log.d("eun",userNum + "포인트 + 10");
+
+                            Long reportLong = document.getLong("report");
+                            reportLong++;
+                            documentRef.update("report", reportLong);
+                            Log.d("eun",userNum + "신고횟수 + 1");
+
+                        } else {
+                            // 일치하는 문서가 없을 경우
+                            Log.d("Firestore", "No documents found with the specified userNum");
+                        }
+                    } else {
+                        Log.d("Firestore", "Query failed with ", task.getException());
+                    }
+                });
+    }
 
 }
