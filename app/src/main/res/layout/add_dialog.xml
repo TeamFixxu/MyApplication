@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:backgroundTint="#FAFAFA"
+    android:background="@drawable/round_dialog"
     android:orientation="vertical">
 
     <TextView
@@ -23,23 +23,33 @@
     <ImageView
         android:id="@+id/singo_picture"
         android:layout_width="320dp"
-        android:layout_height="280dp"
-        android:layout_marginRight="15dp"
+        android:layout_height="393dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:scaleType="fitXY"
-        tools:srcCompat="@tools:sample/avatars"
-        />
-
-    <View
-        android:id="@+id/singo_text"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center"
-        android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"/>
+        android:gravity="center"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/location_dialog_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/pretendard_extrabold"
+        android:text="신고 장소"
+        android:textSize="17sp" />
+    <TextView
+        android:id="@+id/description_dialog_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/pretendard_extralight"
+        android:text="이영주 잃어버림"
+        android:textColor="#000000"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/add_button"
@@ -51,6 +61,7 @@
         android:background="@drawable/round_button"
         android:backgroundTint="#FF69B4"
         android:text="핀에 의견 추가 +1"
+        android:enabled="false"
         android:fontFamily="@font/pretendard_extrabold"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#FAFAFA"

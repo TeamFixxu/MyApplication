@@ -5,21 +5,20 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.drawable.ColorDrawable;
-import android.view.ViewGroup.LayoutParams;
-
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,8 +32,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.databinding.AddDialogBinding;
 import com.example.myapplication.databinding.PinItemBinding;
 import com.google.android.gms.maps.CameraUpdate;
@@ -49,21 +50,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.myapplication.databinding.ActivityMapsUserBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import com.example.myapplication.MarkerData;
 import com.example.myapplication.CameraActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MapsActivity_user extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener{
@@ -83,11 +89,12 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private BottomSheetBehavior<View> infoBottomSheetBehavior;
     private GestureDetector gestureDetector;
-    FirebaseFirestore mFirebase;
-    public ActivityMapsUserBinding binding;
+    FirebaseFirestore mFirebaseStore;
+    private ActivityMapsUserBinding binding;
     Dialog AddDialog; //의견추가하는 다이얼로그라서 add라고 이름지음
 
     public HashMap<Marker, MarkerData> markerDataMap = new HashMap<>();
+    Marker thisMarker;
 
     //public int addPersonCount= 0;
     //public int pinType = 0;
@@ -95,14 +102,12 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private int pin_width = 90;
 
     private String studentNum;
-    private PinAdapter adapter; // 핀 어댑터
-    private int currentKey = 0;
+    private PinAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Intent 데이터 수신
         Intent getintent = getIntent();
         studentNum = getintent.getStringExtra("userNum");
 
@@ -112,11 +117,93 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        mFirebase = FirebaseFirestore.getInstance(); // Firebase 인스턴스 생성
-        // Firestore 인스턴스 생성
-        CollectionReference tagsRef = mFirebase.collection("tags");
+        mFirebaseStore = FirebaseFirestore.getInstance(); //firebase 인스턴스 생성
 
-// 태그 데이터 가져오기 및 RecyclerView 업데이트
+        //권한 요청
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
+
+        //초기화
+        infoBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
+        infoBottomSheetBehavior.setPeekHeight(200);
+        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        clear();
+        //카메라
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK){
+                            // binding.image.
+                            // image 표시
+                            imagePath = result.getData().getStringExtra("image_path");
+                            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                            binding.image.setImageBitmap(bitmap);
+                            binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            binding.imageButton.setVisibility(View.INVISIBLE);
+                            binding.image.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+        binding.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launcher.launch(new Intent(MapsActivity_user.this,CameraActivity.class));
+//
+            }
+        });
+        //카메라 끝
+
+        if (mapFragment != null){
+            mapFragment.getMapAsync(this);
+        }
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        //숭실대 위치를 기준으로 첫 세팅
+        LatLng soongsil_univ = new LatLng(37.4963, 126.9572); //숭실대 위치
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 17));
+        Log.i("eun","load 시작");
+        loadMarkersFromFirestore();
+
+        //마커 추가
+        mMap.setOnMapLongClickListener(this::addMarker);
+        Log.i("eun","클릭");
+        //mMap.setOnMarkerClickListener(this::onMarkerClick);
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker userMarker) {
+                onMarkerClick2(userMarker);
+                return true;
+            }
+        });
+
+        //세팅 버튼 클릭 시 Setting 액티비티 실행
+        binding.setupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity_user.this, Setting.class)
+                        .putExtra("userNum", studentNum);
+                startActivity(intent);
+            }
+        });
+
+        //클릭 시 adminList 관리자리스트 액티비티 실행
+        binding.helpListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity_user.this, AdminList.class);
+                startActivity(intent);
+            }
+        });
+
+        ////////////////////태그 태그 태그 태그
+        CollectionReference tagsRef = mFirebaseStore.collection("tags");
+        // 태그 데이터 가져오기 및 RecyclerView 업데이트
         tagsRef.orderBy("usageCount", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
@@ -133,14 +220,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                         adapter.updateTags(tagList); // RecyclerView 갱신
                     }
                 });
-
-
-
-        binding.pinCrash.setOnClickListener(this);
-        binding.pinLost.setOnClickListener(this);
-        binding.pinHelp.setOnClickListener(this);
-        binding.pinWork.setOnClickListener(this);
-
 
         // RecyclerView와 어댑터 초기화
 
@@ -165,45 +244,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
-        // 지도 설정
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-
-        // 이미지 버튼 설정
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        imagePath = result.getData().getStringExtra("image_path");
-                        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
-                        binding.image.setImageBitmap(bitmap);
-                        binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        binding.imageButton.setVisibility(View.INVISIBLE);
-                        binding.image.setVisibility(View.VISIBLE);
-                    }
-                });
-
-        binding.imageButton.setOnClickListener(view -> launcher.launch(new Intent(MapsActivity_user.this, CameraActivity.class)));
-
-        // 업로드 버튼 설정
-        binding.upload.setOnClickListener(view -> {
-            Log.d("PBY", "detail : " + binding.detailEdit.getText().toString());
-            Log.d("PBY", "image_path : " + imagePath);
-            Log.d("PBY", "pin type : " + pin_type);
-
-            infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            clear();
-        });
-
-        // BottomSheet 초기화
-        infoBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
-        infoBottomSheetBehavior.setPeekHeight(200);
-        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        // 권한 요청
-        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
+        /////////////태그 끝
     }
 
     private void fetchTagsFromFirestore() {
@@ -224,14 +265,15 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                     }
                 });
     }
+
     public void handleTagClick(String tagName) {
-        DocumentReference tagDocRef = mFirebase.collection("tags").document(tagName);
+        DocumentReference tagDocRef = mFirebaseStore.collection("tags").document(tagName);
 
         tagDocRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 // 태그가 존재하면 usageCount 증가
                 long usageCount = documentSnapshot.getLong("usageCount") != null ? documentSnapshot.getLong("usageCount") : 0;
-                mFirebase.collection("tags").document(tagName).update("usageCount", usageCount + 1);
+                mFirebaseStore.collection("tags").document(tagName).update("usageCount", usageCount + 1);
             } else {
                 // 태그가 없으면 새로 추가
                 Map<String, Object> newTag = new HashMap<>();
@@ -241,6 +283,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             }
         });
     }
+
     private void showInputDialog() {
         // 다이얼로그 뷰를 inflate
         LayoutInflater inflater = getLayoutInflater();
@@ -273,87 +316,66 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         dialog.show();
     }
+    public void addMarker(LatLng latLng) {        //addMarker로 이름 바꿈 원래 addCustomMarker
+        thisMarker = null; //초기값 설정
 
+        thisMarker = mMap.addMarker(new MarkerOptions()
+                .position(latLng).draggable(true)
+                .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.gray_pin, 80, 100))));
 
+        binding.pinCrash.setOnClickListener(this);
+        binding.pinLost.setOnClickListener(this);
+        binding.pinHelp.setOnClickListener(this);
+        binding.pinWork.setOnClickListener(this);
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
+        mMap.animateCamera(center);
 
-        //숭실대 위치를 기준으로 첫 세팅
-        LatLng soongsil_univ = new LatLng(37.4963, 126.9572); //숭실대 위치
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 17));
-
-        mMap.setOnMapLongClickListener(this::addCustomMarker);
-        Log.i("eun","클릭");
-        //mMap.setOnMarkerClickListener(this::onMarkerClick);
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker userMarker) {
-                onMarkerClick2(userMarker);
-
-                return true;
-            }
-        });
-
-        //세팅 버튼 클릭 시 Setting 액티비티 실행
-        binding.setupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity_user.this, Setting.class);
-                intent.putExtra("userNum", studentNum);
-                startActivity(intent);
-            }
-        });
-
-        //클릭 시 adminList 관리자리스트 액티비티 실행
-        binding.helpListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity_user.this, AdminList.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    public void addCustomMarker(LatLng latLng) {
-        Marker thisMarker = null; //초기값 설정
+        infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         //Map에 저장할 정보들을 바텀시트를 통해 가져와야함.
-        MarkerData data = new MarkerData(0, false, "Hi", 0);
+        //upload
+        binding.upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //값을 받아야함.
+                MarkerData data = new MarkerData();
 
-        int pinType = data.getPinType();
+                data.setPinType(pin_type);
+                data.setLocation(location);
+                data.setIsCreator(false);
+                data.setDescription(binding.detailEdit.getText().toString());
+                data.setAddPersonCount(0);
+
+                View markerView = createCustomMarkerView(0,pin_type); //비활성화 마커에서 커스텀마커로 변경
+                thisMarker.setIcon(BitmapDescriptorFactory.fromBitmap(createBitmapFromView(markerView)));
+
+                markerDataMap.put(thisMarker, data);
+                Log.d("eun","hashmap에 put 성공");
+                saveMarkerToFirestore(thisMarker, data);
+                Log.d("eun", "마커 database에 저장 성공");
+                infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                Log.d("eun", "upload 됨");
+                clear();
+            }
+        });
+
+
         //여기서 pintype을 위의 data의 값으로 대신 해줘야함. 테스트를 위해 그냥 pintype씀
-        if (pinType == 0){
-            thisMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng).draggable(true)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.pink_pin, 80, 100))));
-        } else if (pinType == 1) {
-            thisMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng).draggable(true)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.yellow_pin, 80, 100))));
-        }
-        else if (pinType == 2) {
-            thisMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng).draggable(true)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(R.drawable.blue_pin, 80, 100))));
-        }
-        else {
-            Toast.makeText(this, "잘못된 핀 타입입니다.", Toast.LENGTH_SHORT).show();
-        }
-
+/*
         if (thisMarker != null){
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            markerDataMap.put(thisMarker, data);
+            markerDataMap.put(thisMarker, data);  //must change
             Log.d("eun","map에 put 성공");
-            saveMarkerToFirestore(thisMarker, data);
+            saveMarkerToFirestore(thisMarker, data);     //must change
             Toast.makeText(this, "마커와 데이터가 저장됐습니다." + data.getDescription(), Toast.LENGTH_SHORT).show();
         } else{
             Toast.makeText(this, "마커를 추가하지 못했습니다.", Toast.LENGTH_SHORT).show();
         }
-
+*/
     }
+
+    //일단 오류가 계속 나니깐 이렇게 해둠
     public boolean onMarkerClick2(Marker marker) {
         CameraUpdate center = CameraUpdateFactory.newLatLng(marker.getPosition());
         mMap.animateCamera(center);
@@ -363,6 +385,43 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         AddDialogBinding dialogBinding = AddDialogBinding.inflate(getLayoutInflater());
         AddDialog.setContentView(dialogBinding.getRoot());
 
+        DocumentReference thisMarkerDoc = mFirebaseStore.collection("fixxu").document(getDocumentNameFromMarker(marker));
+
+        // Firestore에서 클릭한 마커 신고 데이터들 가져오기
+        thisMarkerDoc.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // 저장된 이미지 URL, 위치, 상세내역 가져오기
+                            String imageUrl = documentSnapshot.getString("imageUrl");
+                            String location = documentSnapshot.getString("location");
+                            String description = documentSnapshot.getString("description");
+
+
+                            if (imageUrl != null && !imageUrl.isEmpty() && location!=null && description!=null) {
+                                // Glide를 사용하여 이미지 로드
+                                Glide.with(MapsActivity_user.this)
+                                        .load(imageUrl)
+                                        .into(dialogBinding.singoPicture);
+                                dialogBinding.descriptionDialogText.setText(description);
+                                dialogBinding.locationDialogText.setText(location);
+                            } else {
+                                // 이미지 URL이 없는 경우 기본 이미지 설정
+                                dialogBinding.singoPicture.setImageResource(R.drawable.pin_pressed);
+                            }
+                        } else {
+                            Toast.makeText(MapsActivity_user.this, "문서를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MapsActivity_user.this, "문서 읽기 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        AddDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         AddDialog.show();
 
         /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -377,47 +436,92 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 addButton.setBackgroundColor(Color.parseColor("#A0A0A0"));
 
                 //Toast.makeText(MapsActivity_user.this, "의견이 추가 됐습니다.", Toast.LENGTH_SHORT).show();
-                if (markerDataMap.containsKey(marker)) {
-                    MarkerData clickedMarkerData = markerDataMap.get(marker);
+                DocumentReference thisMarkerDoc = mFirebaseStore.collection("fixxu").document(getDocumentNameFromMarker(marker));
+                thisMarkerDoc.get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // 문서가 존재하면 addPersonCount 값을 가져와서 +1
+                        Long addPersonCount = documentSnapshot.getLong("addPersonCount");
+                        Long pinType = documentSnapshot.getLong("pinType");
+                        if (addPersonCount != null) {
+                            int newCount = addPersonCount.intValue() + 1;
+                            int thisPinType = pinType.intValue();
 
-                    if (clickedMarkerData != null) {
-                        int newCount = clickedMarkerData.getAddPersonCount() + 1;
-                        clickedMarkerData.setAddPersonCount(newCount);
+                            // 마커 아이콘 업데이트
+                            updateMarkerIcon(marker, newCount, thisPinType); // pinType은 적절히 수정 필요
 
-                        DocumentReference changePersonCountdb = mFirebase.collection("fixxu").document(marker.getId());
-                        changePersonCountdb
-                                .update("addPersonCount", newCount)
-                                .addOnSuccessListener(unused -> Log.d("eun", "update complete!" + newCount))
-                                .addOnFailureListener(e -> Log.d("eun", "update fail..."));
-
-                        Toast.makeText(MapsActivity_user.this, "의견이 추가 됐습니다.", Toast.LENGTH_SHORT).show();
+                            // Firebase에 업데이트
+                            thisMarkerDoc.update("addPersonCount", newCount)
+                                    .addOnSuccessListener(unused -> {
+                                        Log.d("eun", "update complete! " + newCount);
+                                        Toast.makeText(MapsActivity_user.this, "의견이 추가 됐습니다.", Toast.LENGTH_SHORT).show();
+                                        AddDialog.dismiss(); // 다이얼로그 종료
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.d("eun", "update fail... " + e.getMessage(), e);
+                                        Toast.makeText(MapsActivity_user.this, "마커 저장 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        AddDialog.dismiss(); // 다이얼로그 종료
+                                    });
+                        } else {
+                            Toast.makeText(MapsActivity_user.this, "addPersonCount 값을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            AddDialog.dismiss(); // 다이얼로그 종료
+                        }
+                    } else {
+                        Toast.makeText(MapsActivity_user.this, "해당 마커의 문서를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        AddDialog.dismiss(); // 다이얼로그 종료
                     }
-                } else {
-                    Toast.makeText(MapsActivity_user.this, "마커 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
-                }
+                }).addOnFailureListener(e -> {
+                    Log.d("eun", "문서 가져오기 실패: " + e.getMessage(), e);
+                    Toast.makeText(MapsActivity_user.this, "문서 가져오기 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    AddDialog.dismiss(); // 다이얼로그 종료
+                });
+            }
+        });
+
+        dialogBinding.dialogCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 AddDialog.dismiss();
             }
         });
         return true;
     }
+
+
     private void saveMarkerToFirestore(Marker marker, MarkerData markerData) {
+        CollectionReference markerColleciton = mFirebaseStore.collection("fixxu");
         //데이터 준비
         Map<String, Object> data = new HashMap<>();
         data.put("addPersonCount", markerData.getAddPersonCount());
         data.put("isCreator", markerData.getIsCreator());
+        data.put("location", markerData.getLocation());
         data.put("description", markerData.getDescription());
         data.put("pinType", markerData.getPinType());
         data.put("latitude", marker.getPosition().latitude);
         data.put("longitude", marker.getPosition().longitude);
+        //Task<Void> set = markers.document(marker.getId()).set(data); //마커 저장하는데 시간이 걸릴 수도 있으니 이렇게 쓰라고 여기서 추천함.
+        //markers.document(marker.getID()).set(data); //원래 코드
+        Log.d("eun", "data firebase에 저장함.");
+
 
         // Firestore에 데이터 저장 (문서 ID는 자동 생성)
-        mFirebase.collection("fixxu")
-                .document(marker.getId())
-                .set(data) // add() 메서드는 문서 ID를 자동 생성
-                .addOnSuccessListener(aVoid ->
-                        Log.d("eun", "Marker saved successfully with ID: " + marker.getId()))
-                .addOnFailureListener(e ->
-                        Log.e("eun", "Error saving marker", e));
+        String filename = getDocumentNameFromMarker(marker);
+        markerColleciton.document(filename)
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("eun", "마커 스토어 저장 성공");
+                        Toast.makeText(MapsActivity_user.this, "마커 저장 성공!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("eun", "스토어 저장 실패: " + e.getMessage(), e);
+                        Toast.makeText(MapsActivity_user.this, "마커 저장 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        uploadImageToStorage(imagePath,filename);
     }
 
     public void onClick(View v){
@@ -446,16 +550,178 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         binding.image.setVisibility(View.INVISIBLE);
     }
     private void clear_pin(){
-        pin_type=0;
+        pin_type = 0;
         binding.pinCrash.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinLost.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinWork.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
         binding.pinHelp.setBackground(getResources().getDrawable(R.drawable.button_not_pressed));
     }
+
+    public String getDocumentNameFromMarker(Marker marker) {
+        // 위도와 경도를 문자열로 변환하고 소수점을 언더바로 대체=> 점이나 슬래쉬 등은 firebase문서 이름으로 설정 불가능
+        String latitude = String.valueOf(marker.getPosition().latitude).replace('.', '_');
+        String longitude = String.valueOf(marker.getPosition().longitude).replace('.', '_');
+
+        // 위도와 경도를 조합하여 문서 이름 생성
+        String documentName = latitude + "_" + longitude;
+        return documentName;
+    }
+
     private Bitmap getResizedBitmap(int drawableRes, int width, int height) {
         // Drawable 리소스를 Bitmap으로
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
         // Bitmap 크기 조절
         return Bitmap.createScaledBitmap(originalBitmap, width, height, false);
     }
+
+    private Bitmap createBitmapFromView(View view) {
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+
+    private void uploadImageToStorage(String imagePath,String filename) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            Toast.makeText(this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String filename2 = filename;
+        Uri fileUri = Uri.fromFile(new File(imagePath));
+        String fileNameTemp = "images/" + System.currentTimeMillis() + ".jpg";
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child(fileNameTemp);
+
+        storageRef.putFile(fileUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String downloadUrl = uri.toString();
+                                saveImageUrlToFirestore(downloadUrl,filename2);
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MapsActivity_user.this, "이미지 업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    //다운로드 url을 firestore 해당 마커(filename을 통해)의 필드에 추가.
+    private void saveImageUrlToFirestore(String imageUrl,String filename) {
+        DocumentReference documentReference = mFirebaseStore.collection("fixxu").document(filename);
+
+        Map<String, Object> imageData = new HashMap<>();
+        imageData.put("imageUrl", imageUrl);
+        documentReference.set(imageData, SetOptions.merge());
+    }
+
+    private View createCustomMarkerView(int badgeCnt, int pin){
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View markerView = inflater.inflate(R.layout.custom_marker, null);
+        ImageView markerImage = markerView.findViewById(R.id.marker_image);
+        switch (pin) {
+            case 1:
+                markerImage.setImageResource(R.drawable.pink_pin); // pin_type 1에 해당하는 이미지
+                break;
+            case 2:
+                markerImage.setImageResource(R.drawable.yellow_pin); // pin_type 2에 해당하는 이미지
+                break;
+            case 3:
+                markerImage.setImageResource(R.drawable.blue_pin); // pin_type 3에 해당하는 이미지
+                break;
+            default:
+                markerImage.setImageResource(R.drawable.gray_pin); // 기본 이미지
+                break;
+        }
+        TextView badge = markerView.findViewById(R.id.marker_badge);
+        if (badgeCnt > 0) {
+            badge.setVisibility(View.VISIBLE);
+            badge.setText(String.valueOf(badgeCnt));
+        } else {
+            badge.setVisibility(View.GONE);
+        }
+
+
+        return markerView;
+    }
+    private void updateMarkerIcon(Marker marker, int newBadgeCnt, int pinType) {
+        if (marker == null) return;
+
+        // 새로운 커스텀 마커 뷰 생성
+        View markerView = createCustomMarkerView(newBadgeCnt, pinType);
+
+        if (markerView != null) {
+            // 마커 뷰를 비트맵으로 변환
+            Bitmap markerBitmap = createBitmapFromView(markerView);
+
+            // 아이콘 업데이트
+            marker.setIcon(BitmapDescriptorFactory.fromBitmap(markerBitmap));
+
+        }
+    }
+
+    private void loadMarkersFromFirestore() {
+        CollectionReference markerCollection = mFirebaseStore.collection("fixxu");
+
+        markerCollection.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        int i = 0;
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            try {
+                                // Firestore 문서 데이터를 읽어옴
+                                Log.i("eun", "Firestore에서 데이터 로드 중...");
+                                Map<String, Object> data = document.getData();
+
+                                // 데이터 변환 및 검증
+                                double latitude = data.containsKey("latitude") ? (double) data.get("latitude") : 0.0;
+                                double longitude = data.containsKey("longitude") ? (double) data.get("longitude") : 0.0;
+                                String description = data.containsKey("description") ? (String) data.get("description") : "";
+                                int pinType = data.containsKey("pinType") ? ((Long) data.get("pinType")).intValue() : 0; // Firestore에서 Long으로 저장됨
+                                boolean isCreator = data.containsKey("isCreator") ? (boolean) data.get("isCreator") : false;
+                                int addPersonCount = data.containsKey("addPersonCount") ? ((Long) data.get("addPersonCount")).intValue() : 0;
+
+                                LatLng position = new LatLng(latitude, longitude);
+
+                                // 커스텀 마커 뷰 생성
+                                View markerView = createCustomMarkerView(addPersonCount, pinType);
+
+                                // Google Maps에 마커 추가
+                                Marker marker = mMap.addMarker(new MarkerOptions()
+                                        .position(position)
+                                        .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromView(markerView)))
+                                        .draggable(true) // 필요 시 마커를 드래그 가능하게 설정
+                                );
+                                i++;
+                                Log.i("eun", "마커 추가 완료: " + i + "개");
+                            } catch (Exception e) {
+                                Log.e("eun", "마커 로드 중 오류 발생: " + e.getMessage(), e);
+                            }
+                        }
+                        Log.d("eun", "모든 마커가 지도에 표시되었습니다.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("eun", "Firestore에서 마커 불러오기 실패: " + e.getMessage(), e);
+                        Toast.makeText(MapsActivity_user.this, "마커 불러오기 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
 }
