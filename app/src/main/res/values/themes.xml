@@ -1,9 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.MyApplication" parent="Theme.AppCompat.Light">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+    <style name="Maps_User" parent="Theme.MyApplication">
+        <item name="colorPrimary">@color/button_default_color</item>
+        <item name="buttonStyle">@style/CustomButtonStyle</item>
+    </style>
 </resources>

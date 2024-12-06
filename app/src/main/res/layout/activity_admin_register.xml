@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8F8F8"
-    tools:context=".AdminRegisterActivity">
+    tools:context=".Membership">
 
     <!-- Title TextView -->
     <TextView
@@ -91,6 +91,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
+
+
     <!-- 전화번호 입력 EditText -->
     <EditText
         android:id="@+id/editTextPhone"
@@ -140,4 +142,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

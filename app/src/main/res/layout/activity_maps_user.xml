@@ -27,7 +27,7 @@
             android:layout_margin="5dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/set_wheel_button2" />
+            android:src="@drawable/set_wheel_button" />
 
         <ImageButton
             android:id="@+id/help_list_Button"
