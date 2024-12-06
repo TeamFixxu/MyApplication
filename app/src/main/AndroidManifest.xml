@@ -7,35 +7,50 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-    <uses-feature
-        android:name="android.hardware.telephony"
-        android:required="false" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher_foreground"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_monochrome"
+        android:roundIcon="@mipmap/ic_launcher_background"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".MapsActivity_admin"
-            android:exported="false" />
+            android:name=".ReportList"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
-            android:name=".Setting_admin"
-            android:exported="false" />
+            android:name=".StartActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".CameraActivity"
-            android:exported="false" />
+            android:exported="true" />
+        <!--
+        <activity
+                    android:name=".pin_inflater"
+                    android:exported="true">
+
+
+                </activity>
+                <
+        -->
         <activity
             android:name=".AdminList"
             android:exported="false" />
@@ -46,8 +61,20 @@
 
         <activity
             android:name=".MapsActivity_user"
-            android:exported="false"
-            android:label="@string/title_activity_maps_user" />
+            android:exported="true"
+            android:label="@string/title_activity_maps_user"
+            android:theme="@style/Maps_User">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MapsActivity_admin"
+            android:exported="true"
+            android:label="MapsActivity_admin"
+            android:theme="@style/Maps_User" />
         <activity
             android:name=".AdminRegisterActivity"
             android:exported="false" />
@@ -66,15 +93,6 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".StartActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

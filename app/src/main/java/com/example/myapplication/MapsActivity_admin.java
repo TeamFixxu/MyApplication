@@ -108,6 +108,15 @@ public class MapsActivity_admin extends FragmentActivity implements OnMapReadyCa
         binding = ActivityMapsAdminBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
+        binding.helpListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity_admin.this, ReportList.class);
+                startActivity(intent);
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
