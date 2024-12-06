@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/fixxu"
             android:layout_width="wrap_content"
-            android:layout_height="67dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="360dp"
             android:fontFamily="@font/pretendard_extrabold"
             android:gravity="top"

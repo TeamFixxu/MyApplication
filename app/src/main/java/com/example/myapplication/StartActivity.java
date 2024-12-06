@@ -10,17 +10,17 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
+
 public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseApp.initializeApp(this); // Firebase 초기화
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        // Action Bar 숨기기
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+        getSupportActionBar().hide();
 
         TextView textView = findViewById(R.id.fixxu);
 

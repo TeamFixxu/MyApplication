@@ -76,7 +76,7 @@ public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.AdminViewHol
     }
 
     public static class AdminViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewName, textViewEmail, textViewRegion, textViewPhone;
+        TextView textViewName, textViewRegion, textViewPhone;
         ImageView imageViewProfile;
 
         public AdminViewHolder(@NonNull View itemView) {

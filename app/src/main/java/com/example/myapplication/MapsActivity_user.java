@@ -83,7 +83,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private BottomSheetBehavior<View> infoBottomSheetBehavior;
     private GestureDetector gestureDetector;
-    FirebaseFirestore testdb;
+    FirebaseFirestore mFirebase;
     public ActivityMapsUserBinding binding;
     Dialog AddDialog; //의견추가하는 다이얼로그라서 add라고 이름지음
 
@@ -96,7 +96,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
     private String studentNum;
     private PinAdapter adapter; // 핀 어댑터
-    //private ArrayList<String> itemList;
     private int currentKey = 0;
 
     @Override
@@ -113,10 +112,9 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        testdb = FirebaseFirestore.getInstance(); // Firebase 인스턴스 생성
+        mFirebase = FirebaseFirestore.getInstance(); // Firebase 인스턴스 생성
         // Firestore 인스턴스 생성
-        FirebaseFirestore testdb = FirebaseFirestore.getInstance();
-        CollectionReference tagsRef = testdb.collection("tags");
+        CollectionReference tagsRef = mFirebase.collection("tags");
 
 // 태그 데이터 가져오기 및 RecyclerView 업데이트
         tagsRef.orderBy("usageCount", Query.Direction.DESCENDING)
@@ -227,13 +225,13 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 });
     }
     public void handleTagClick(String tagName) {
-        DocumentReference tagDocRef = testdb.collection("tags").document(tagName);
+        DocumentReference tagDocRef = mFirebase.collection("tags").document(tagName);
 
         tagDocRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 // 태그가 존재하면 usageCount 증가
                 long usageCount = documentSnapshot.getLong("usageCount") != null ? documentSnapshot.getLong("usageCount") : 0;
-                testdb.collection("tags").document(tagName).update("usageCount", usageCount + 1);
+                mFirebase.collection("tags").document(tagName).update("usageCount", usageCount + 1);
             } else {
                 // 태그가 없으면 새로 추가
                 Map<String, Object> newTag = new HashMap<>();
@@ -386,7 +384,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                         int newCount = clickedMarkerData.getAddPersonCount() + 1;
                         clickedMarkerData.setAddPersonCount(newCount);
 
-                        DocumentReference changePersonCountdb = testdb.collection("fixxu").document(marker.getId());
+                        DocumentReference changePersonCountdb = mFirebase.collection("fixxu").document(marker.getId());
                         changePersonCountdb
                                 .update("addPersonCount", newCount)
                                 .addOnSuccessListener(unused -> Log.d("eun", "update complete!" + newCount))
@@ -413,7 +411,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         data.put("longitude", marker.getPosition().longitude);
 
         // Firestore에 데이터 저장 (문서 ID는 자동 생성)
-        testdb.collection("fixxu")
+        mFirebase.collection("fixxu")
                 .document(marker.getId())
                 .set(data) // add() 메서드는 문서 ID를 자동 생성
                 .addOnSuccessListener(aVoid ->
