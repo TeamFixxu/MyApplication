@@ -63,6 +63,11 @@ public class CameraActivity extends AppCompatActivity {
         binding = ActivityCameraBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Action Bar 숨기기
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         // 비동기적으로 ProcessCameraProvider 초기화
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
 

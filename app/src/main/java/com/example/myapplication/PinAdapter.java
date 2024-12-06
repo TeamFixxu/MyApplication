@@ -49,11 +49,22 @@ public class PinAdapter extends RecyclerView.Adapter<PinAdapter.PinViewHolder> {
         String tag = itemList.get(position);
         holder.binding.pin.setText("#" + tag);
 
-        holder.binding.pin.setOnClickListener(view -> {
+        // 선택된 태그는 클릭하지 않도록 설정
+        if (selectedTags.containsKey(tag) && selectedTags.get(tag)) {
+            // 태그가 선택된 상태이면 배경을 변경하고 클릭 이벤트를 무효화
             Drawable pressedDrawable = context.getResources().getDrawable(R.drawable.tag_pressed);
             holder.binding.pin.setBackground(pressedDrawable);
-            handleTagClick(tag); // 태그 클릭 이벤트 처리
-        });
+            holder.binding.pin.setClickable(false); // 클릭을 비활성화
+        } else {
+            // 선택되지 않은 상태에서는 클릭 가능
+            holder.binding.pin.setClickable(true);
+            holder.binding.pin.setOnClickListener(view -> {
+                selectedTags.put(tag, true); // 선택된 태그로 마킹
+                Drawable pressedDrawable = context.getResources().getDrawable(R.drawable.tag_pressed);
+                holder.binding.pin.setBackground(pressedDrawable);
+                handleTagClick(tag); // 태그 클릭 시 사용 빈도 업뎃
+            });
+        }
     }
 
     @Override
@@ -75,7 +86,6 @@ public class PinAdapter extends RecyclerView.Adapter<PinAdapter.PinViewHolder> {
                                 .set(new Tag(newItem, 1)) // 사용 빈도를 1로 초기화
                                 .addOnSuccessListener(aVoid -> {
                                     Log.d("PinAdapter", "태그 저장 성공: " + newItem);
-                                    itemList.add(newItem);  // itemList에 추가
                                     notifyItemInserted(itemList.size() - 1);  // RecyclerView 업데이트
                                 })
                                 .addOnFailureListener(e -> Log.e("PinAdapter", "태그 저장 실패", e));

@@ -53,6 +53,11 @@ AdminRegisterActivity extends AppCompatActivity {
         binding = ActivityAdminMembershipBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Action Bar 숨기기
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseStore = FirebaseFirestore.getInstance();

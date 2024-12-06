@@ -18,6 +18,11 @@ public class UserCheckActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_check);
 
+        // Action Bar 숨기기
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         mBtnUser = findViewById(R.id.button3);
         mBtnManager = findViewById(R.id.btnManager);
 

@@ -29,6 +29,11 @@ public class Setting_admin extends AppCompatActivity {
         ActivitySettingAdminBinding binding = ActivitySettingAdminBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Action Bar 숨기기
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         Intent getintent = getIntent();
         String userNum = getintent.getStringExtra("userNum");
 

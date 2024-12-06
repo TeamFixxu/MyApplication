@@ -17,6 +17,11 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        // Action Bar 숨기기
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         TextView textView = findViewById(R.id.fixxu);
 
         String htmlString = getString(R.string.fixxu);

@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.drawable.ColorDrawable;
 import android.view.ViewGroup.LayoutParams;
 
 import android.app.Dialog;
@@ -107,8 +109,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         binding = ActivityMapsUserBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -243,24 +243,39 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             }
         });
     }
-    private void showInputDialog() {  // 핀 다이얼로그
+    private void showInputDialog() {
+        // 다이얼로그 뷰를 inflate
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_tag, null);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("새 태그 추가");
+        builder.setView(dialogView);
 
-        final EditText input = new EditText(this);
-        builder.setView(input);
+        // 뷰에서 요소 참조
+        EditText input = dialogView.findViewById(R.id.tag_input);
+        Button cancelButton = dialogView.findViewById(R.id.cancel_button);
+        Button addButton = dialogView.findViewById(R.id.add_button);
 
-        builder.setPositiveButton("추가", (dialog, which) -> {
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        // 추가 버튼 동작
+        addButton.setOnClickListener(v -> {
             String newTag = input.getText().toString().trim();
             if (!newTag.isEmpty()) {
-                adapter.addItem(newTag); //추가했을때 이게 돔.
-                handleTagClick(newTag); // 태그 추가 또는  빈도 업데이트
+                adapter.addItem(newTag); // 태그 추가
+                handleTagClick(newTag); // 빈도 업데이트
+                dialog.dismiss();
             }
         });
 
-        builder.setNegativeButton("취소", (dialog, which) -> dialog.dismiss());
-        builder.show();
+        // 취소 버튼 동작
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
+
 
 
     @Override
