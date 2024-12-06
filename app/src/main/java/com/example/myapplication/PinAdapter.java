@@ -86,7 +86,8 @@ public class PinAdapter extends RecyclerView.Adapter<PinAdapter.PinViewHolder> {
                                 .set(new Tag(newItem, 1)) // 사용 빈도를 1로 초기화
                                 .addOnSuccessListener(aVoid -> {
                                     Log.d("PinAdapter", "태그 저장 성공: " + newItem);
-                                    notifyItemInserted(itemList.size() - 1);  // RecyclerView 업데이트
+                                    //notifyItemInserted(itemList.size() - 1);  // RecyclerView 업데이트
+                                    notifyDataSetChanged(); // RecyclerView 업데이트
                                 })
                                 .addOnFailureListener(e -> Log.e("PinAdapter", "태그 저장 실패", e));
                     } else {
