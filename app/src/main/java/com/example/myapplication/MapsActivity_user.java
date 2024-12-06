@@ -17,6 +17,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.databinding.AddDialogBinding;
 import com.example.myapplication.databinding.PinItemBinding;
 import com.google.android.gms.maps.CameraUpdate;
@@ -53,8 +55,16 @@ import com.example.myapplication.MarkerData;
 import com.example.myapplication.CameraActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -146,6 +156,8 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         //숭실대 위치를 기준으로 첫 세팅
         LatLng soongsil_univ = new LatLng(37.4963, 126.9572); //숭실대 위치
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(soongsil_univ, 17));
+        Log.i("eun","load 시작");
+        loadMarkersFromFirestore();
 
         //마커 추가
         mMap.setOnMapLongClickListener(this::addMarker);
@@ -235,7 +247,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 MarkerData data = new MarkerData();
 
                 data.setPinType(pin_type);
-                data.setLocation("정보과학관");
+                data.setLocation(location);
                 data.setIsCreator(false);
                 data.setDescription(binding.detailEdit.getText().toString());
                 data.setAddPersonCount(0);
@@ -278,6 +290,43 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         AddDialogBinding dialogBinding = AddDialogBinding.inflate(getLayoutInflater());
         AddDialog.setContentView(dialogBinding.getRoot());
 
+        DocumentReference thisMarkerDoc = mFirebaseStore.collection("fixxu").document(getDocumentNameFromMarker(marker));
+
+        // Firestore에서 클릭한 마커 신고 데이터들 가져오기
+        thisMarkerDoc.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // 저장된 이미지 URL, 위치, 상세내역 가져오기
+                            String imageUrl = documentSnapshot.getString("imageUrl");
+                            String location = documentSnapshot.getString("location");
+                            String description = documentSnapshot.getString("description");
+
+
+                            if (imageUrl != null && !imageUrl.isEmpty() && location!=null && description!=null) {
+                                // Glide를 사용하여 이미지 로드
+                                Glide.with(MapsActivity_user.this)
+                                        .load(imageUrl)
+                                        .into(dialogBinding.singoPicture);
+                                dialogBinding.descriptionDialogText.setText(description);
+                                dialogBinding.locationDialogText.setText(location);
+                            } else {
+                                // 이미지 URL이 없는 경우 기본 이미지 설정
+                                dialogBinding.singoPicture.setImageResource(R.drawable.pin_pressed);
+                            }
+                        } else {
+                            Toast.makeText(MapsActivity_user.this, "문서를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MapsActivity_user.this, "문서 읽기 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        AddDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         AddDialog.show();
 
         /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -332,6 +381,13 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 });
             }
         });
+
+        dialogBinding.dialogCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddDialog.dismiss();
+            }
+        });
         return true;
     }
 
@@ -342,6 +398,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         Map<String, Object> data = new HashMap<>();
         data.put("addPersonCount", markerData.getAddPersonCount());
         data.put("isCreator", markerData.getIsCreator());
+        data.put("location", markerData.getLocation());
         data.put("description", markerData.getDescription());
         data.put("pinType", markerData.getPinType());
         data.put("latitude", marker.getPosition().latitude);
@@ -350,8 +407,10 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         //markers.document(marker.getID()).set(data); //원래 코드
         Log.d("eun", "data firebase에 저장함.");
 
+
         // Firestore에 데이터 저장 (문서 ID는 자동 생성)
-        markerColleciton.document(getDocumentNameFromMarker(marker))
+        String filename = getDocumentNameFromMarker(marker);
+        markerColleciton.document(filename)
             .set(data)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -367,6 +426,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                     Toast.makeText(MapsActivity_user.this, "마커 저장 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
+        uploadImageToStorage(imagePath,filename);
     }
 
     public void onClick(View v){
@@ -429,6 +489,49 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     }
 
 
+    private void uploadImageToStorage(String imagePath,String filename) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            Toast.makeText(this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String filename2 = filename;
+        Uri fileUri = Uri.fromFile(new File(imagePath));
+        String fileNameTemp = "images/" + System.currentTimeMillis() + ".jpg";
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child(fileNameTemp);
+
+        storageRef.putFile(fileUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String downloadUrl = uri.toString();
+                                saveImageUrlToFirestore(downloadUrl,filename2);
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MapsActivity_user.this, "이미지 업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    //다운로드 url을 firestore 해당 마커(filename을 통해)의 필드에 추가.
+    private void saveImageUrlToFirestore(String imageUrl,String filename) {
+        DocumentReference documentReference = mFirebaseStore.collection("fixxu").document(filename);
+
+        Map<String, Object> imageData = new HashMap<>();
+        imageData.put("imageUrl", imageUrl);
+        documentReference.set(imageData, SetOptions.merge());
+    }
+
     private View createCustomMarkerView(int badgeCnt, int pin){
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View markerView = inflater.inflate(R.layout.custom_marker, null);
@@ -473,6 +576,58 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         }
     }
+
+    private void loadMarkersFromFirestore() {
+        CollectionReference markerCollection = mFirebaseStore.collection("fixxu");
+
+        markerCollection.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        int i = 0;
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            try {
+                                // Firestore 문서 데이터를 읽어옴
+                                Log.i("eun", "Firestore에서 데이터 로드 중...");
+                                Map<String, Object> data = document.getData();
+
+                                // 데이터 변환 및 검증
+                                double latitude = data.containsKey("latitude") ? (double) data.get("latitude") : 0.0;
+                                double longitude = data.containsKey("longitude") ? (double) data.get("longitude") : 0.0;
+                                String description = data.containsKey("description") ? (String) data.get("description") : "";
+                                int pinType = data.containsKey("pinType") ? ((Long) data.get("pinType")).intValue() : 0; // Firestore에서 Long으로 저장됨
+                                boolean isCreator = data.containsKey("isCreator") ? (boolean) data.get("isCreator") : false;
+                                int addPersonCount = data.containsKey("addPersonCount") ? ((Long) data.get("addPersonCount")).intValue() : 0;
+
+                                LatLng position = new LatLng(latitude, longitude);
+
+                                // 커스텀 마커 뷰 생성
+                                View markerView = createCustomMarkerView(addPersonCount, pinType);
+
+                                // Google Maps에 마커 추가
+                                Marker marker = mMap.addMarker(new MarkerOptions()
+                                        .position(position)
+                                        .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromView(markerView)))
+                                        .draggable(true) // 필요 시 마커를 드래그 가능하게 설정
+                                );
+                                i++;
+                                Log.i("eun", "마커 추가 완료: " + i + "개");
+                            } catch (Exception e) {
+                                Log.e("eun", "마커 로드 중 오류 발생: " + e.getMessage(), e);
+                            }
+                        }
+                        Log.d("eun", "모든 마커가 지도에 표시되었습니다.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("eun", "Firestore에서 마커 불러오기 실패: " + e.getMessage(), e);
+                        Toast.makeText(MapsActivity_user.this, "마커 불러오기 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
     private class PinViewHolder extends RecyclerView.ViewHolder {
         private PinItemBinding pinItemBinding;

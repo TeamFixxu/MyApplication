@@ -40,6 +40,20 @@
             android:text="@string/fixxu"
             android:textAppearance="@style/fixxu" />
 
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/FoldingCube"
+            style="@style/SpinKitView.ThreeBounce"
+            android:layout_width="150dp"
+            android:layout_height="101dp"
+            android:layout_below="@+id/imageView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="131dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="130dp"
+            app:SpinKit_Color="#0C42FF" />
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
