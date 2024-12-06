@@ -10,6 +10,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.view.ViewGroup.LayoutParams;
 
 import android.app.Dialog;
@@ -52,6 +57,7 @@ import com.example.myapplication.CameraActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +69,12 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
     private static final int PIN_LOST = 2;
     private static final int PIN_WORK = 3;
     private static final int PIN_HELP = 4;
-
+    private int tagCount = 0;
     private String imagePath;
     private String location;
+    private String tag1;
+    private String tag2;
+    private String tag3;
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private String  imageFilePath;
     private Uri photoUri;
@@ -120,7 +129,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         clear();
 
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+        ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
@@ -136,20 +145,58 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                         }
                     }
                 });
-        binding.imageButton.setOnClickListener(new View.OnClickListener() {
+        ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
-            public void onClick(View view) {
-                launcher.launch(new Intent(MapsActivity_user.this,CameraActivity.class));
-//
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == RESULT_OK) {
+                    // Process selected image from gallery
+                    Uri selectedImageUri = result.getData().getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                        binding.image.setImageBitmap(bitmap);
+                        binding.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        binding.imageButton.setVisibility(View.INVISIBLE);
+                        binding.image.setVisibility(View.VISIBLE);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
+        binding.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] options = {"카메라로 찍기", "갤러리에서 선택"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity_user.this);
+                builder.setTitle("이미지 선택");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            cameraLauncher.launch(new Intent(MapsActivity_user.this,CameraActivity.class));
+
+                        } else if (which == 1) {
+                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            galleryLauncher.launch(intent);
+
+                        }
+                    }
+                });
+                builder.show();
+
+
+            }
+        });
         binding.upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("PBY","detail : " + binding.detailEdit.getText().toString());
                 Log.d("PBY","image_path : " + imagePath);
                 Log.d("PBY","pin type : " + pin_type);
+                Log.d("PBY",location);
 
                 infoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 clear();
@@ -170,13 +217,15 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         binding.pinRecyclerview.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false));
-        binding.pinRecyclerview.setAdapter((new PinAdapter(map)));
+        PinAdapter pinAdapter = new PinAdapter(map);
+        binding.pinRecyclerview.setAdapter(pinAdapter);
 
         binding.addTagButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
+                pinAdapter.notifyItemInserted(map.size());
             }
         });
 
@@ -184,7 +233,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 location=adapterView.getItemAtPosition(i).toString();
-                Log.d("PBY",location);
             }
 
             @Override
@@ -192,9 +240,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
             }
         });
-
-
-
     }
     private class PinViewHolder extends RecyclerView.ViewHolder {
         private PinItemBinding pinItemBinding;
@@ -228,8 +273,21 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
             holder.pinItemBinding.pin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    holder.pinItemBinding.pin.setBackground(getResources().getDrawable(R.drawable.tag_pressed));
 
+                    if(holder.pinItemBinding.pin.getBackground().getConstantState()
+                            == getResources().getDrawable(R.drawable.tag_pressed).getConstantState()){
+                        holder.pinItemBinding.pin.setBackground(
+                                getResources().getDrawable(R.drawable.button_not_pressed));
+                        tagCount-=1;
+                    }else {
+
+                        if (tagCount <3) {
+                            tagCount += 1;
+                            holder.pinItemBinding.pin.setBackground(
+                                    getResources().getDrawable(R.drawable.tag_pressed));
+                        }
+                        else if (tagCount >= 3) return;
+                    }
                 }
             });
         }
