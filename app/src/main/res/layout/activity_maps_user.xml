@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="30dp"
-                android:text="핀 변경 및 삭제"
+                android:text="핀 업로드"
                 android:textSize="24sp"
                 android:textColor="#444444"
                 android:lineHeight="28.64dp"

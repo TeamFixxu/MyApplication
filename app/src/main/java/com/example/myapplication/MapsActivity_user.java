@@ -348,6 +348,8 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 data.setDescription(binding.detailEdit.getText().toString());
                 data.setAddPersonCount(0);
 
+                updateSingoCnt(studentNum); /////////사용자 신고횟수, 포인트 변경
+
                 View markerView = createCustomMarkerView(0,pin_type); //비활성화 마커에서 커스텀마커로 변경
                 thisMarker.setIcon(BitmapDescriptorFactory.fromBitmap(createBitmapFromView(markerView)));
 
@@ -360,20 +362,6 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
                 clear();
             }
         });
-
-
-        //여기서 pintype을 위의 data의 값으로 대신 해줘야함. 테스트를 위해 그냥 pintype씀
-/*
-        if (thisMarker != null){
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            markerDataMap.put(thisMarker, data);  //must change
-            Log.d("eun","map에 put 성공");
-            saveMarkerToFirestore(thisMarker, data);     //must change
-            Toast.makeText(this, "마커와 데이터가 저장됐습니다." + data.getDescription(), Toast.LENGTH_SHORT).show();
-        } else{
-            Toast.makeText(this, "마커를 추가하지 못했습니다.", Toast.LENGTH_SHORT).show();
-        }
-*/
     }
 
     //일단 오류가 계속 나니깐 이렇게 해둠
@@ -490,6 +478,8 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
     private void saveMarkerToFirestore(Marker marker, MarkerData markerData) {
         CollectionReference markerColleciton = mFirebaseStore.collection("fixxu");
+
+        int state = 1;
         //데이터 준비
         Map<String, Object> data = new HashMap<>();
         data.put("addPersonCount", markerData.getAddPersonCount());
@@ -499,6 +489,7 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
         data.put("pinType", markerData.getPinType());
         data.put("latitude", marker.getPosition().latitude);
         data.put("longitude", marker.getPosition().longitude);
+        data.put("state", state); //상태 추가
         data.put("createdAt", FieldValue.serverTimestamp());  //생성 시간 추가!!
         //Task<Void> set = markers.document(marker.getId()).set(data); //마커 저장하는데 시간이 걸릴 수도 있으니 이렇게 쓰라고 여기서 추천함.
         //markers.document(marker.getID()).set(data); //원래 코드
@@ -673,6 +664,37 @@ public class MapsActivity_user extends FragmentActivity implements OnMapReadyCal
 
         }
     }
+
+    private void updateSingoCnt(String userNum){
+        CollectionReference usersFirestore = mFirebaseStore.collection("users");
+        usersFirestore
+                .whereEqualTo("userNum", userNum)  // userNum이 일치하는 사용자 찾기
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (!querySnapshot.isEmpty()) {
+                            // 첫 번째 일치하는 문서 가져오기
+                            DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                            DocumentReference documentRef = document.getReference();
+                            Long pointLong = document.getLong("point");
+                            pointLong += 10;
+                            documentRef.update("point", pointLong);
+                            Log.d("eun",userNum + "포인트 + 10");
+                            Long reportLong = document.getLong("report");
+                            reportLong++;
+                            documentRef.update("report", reportLong);
+                            Log.d("eun",userNum + "신고횟수 + 1");
+                        } else {
+                            // 일치하는 문서가 없을 경우
+                            Log.d("Firestore", "No documents found with the specified userNum");
+                        }
+                    } else {
+                        Log.d("Firestore", "Query failed with ", task.getException());
+                    }
+                });
+    }
+
 
     private void loadMarkersFromFirestore() {
         CollectionReference markerCollection = mFirebaseStore.collection("fixxu");
